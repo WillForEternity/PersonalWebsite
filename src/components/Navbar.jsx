@@ -18,11 +18,27 @@ const Navbar = () => {
 
   useEffect(() => {
     const generateChaoticPath = () => {
-      // ... (keep existing path generation logic)
+      const numPoints = 50;
+      const radius = 40;
+      const centerX = 50;
+      const centerY = 25;
+      let path = `M${centerX + radius} ${centerY}`;
+
+      for (let i = 1; i <= numPoints; i++) {
+        const angle = (i / numPoints) * Math.PI * 2;
+        const x = centerX + Math.cos(angle) * radius * (1 + Math.random() * 0.1);
+        const y = centerY + Math.sin(angle) * radius * (1 + Math.random() * 0.1);
+        path += ` L${x} ${y}`;
+      }
+
+      path += 'Z';
+      return path;
     };
 
     const animatePath = () => {
-      // ... (keep existing path animation logic)
+      const path = svgRef.current.querySelector('path');
+      path.setAttribute('d', generateChaoticPath());
+      requestAnimationFrame(animatePath);
     };
 
     animatePath();
