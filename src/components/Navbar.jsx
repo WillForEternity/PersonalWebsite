@@ -129,7 +129,7 @@ const Navbar = () => {
             <img 
               src={logo} 
               alt="logo" 
-              className={`w-30 h-30 sm:w-20 sm:h-15 object-contain transition-all duration-300 cursor-pointer ${
+              className={`w-16 h-16 sm:w-15 sm:h-15 object-contain transition-all duration-300 cursor-pointer ${
                 isWhiteBackground ? '' : 'filter invert'
               }`}
               onMouseEnter={() => handleLogoHover(true)}
