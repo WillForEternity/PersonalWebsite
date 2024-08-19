@@ -82,7 +82,7 @@ const Hero = () => {
               variants={itemVariants}
               className="max-w-xl text-sm md:text-sm font-extralight tracking-tighter text-center lg:text-left mt-6 text-white"
             >
-             --  --  --  --
+             --  --  -- 
             </motion.p>
             <motion.p 
               variants={itemVariants}
