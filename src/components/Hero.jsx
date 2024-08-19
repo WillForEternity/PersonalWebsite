@@ -56,7 +56,7 @@ const Hero = () => {
   };
 
   return (
-    <div ref={ref} className="py-24 lg:py-32 relative z-10">
+    <div ref={ref} className="py-28 lg:py-36 pt-32 lg:pt-40 relative z-10"> {/* Increased top padding */}
       <div className="container mx-auto px-4">
         <motion.div
           variants={containerVariants}
@@ -67,17 +67,23 @@ const Hero = () => {
           <div className="w-full lg:w-1/2 lg:pr-12 mb-8 lg:mb-0">
             <motion.h1 
               variants={itemVariants}
-              className="text-7xl md:text-8xl font-thin tracking-tight text-white text-center lg:text-left"
+              className="text-6xl md:text-9xl font-thin tracking-tight text-white text-center lg:text-left"
               style={textWithBorderStyle}
             >
               Will Norden
             </motion.h1>
             <motion.span 
               variants={itemVariants}
-              className="bg-gradient-to-r from-pink-300 via-slate-700 to-purple-700 bg-clip-text text-2xl md:text-3xl tracking-tight text-transparent font-light text-center lg:text-left block mt-4"
+              className="bg-gradient-to-r from-pink-300 via-slate-700 to-purple-700 bg-clip-text text-3xl md:text-3xl tracking-tight text-transparent font-light text-center lg:text-left block mt-4"
             >
               Aspiring deep learning scientist and hardware engineer
             </motion.span>
+            <motion.p 
+              variants={itemVariants}
+              className="max-w-xl text-sm md:text-sm font-extralight tracking-tighter text-center lg:text-left mt-6 text-white"
+            >
+             --  --  --  --
+            </motion.p>
             <motion.p 
               variants={itemVariants}
               className="max-w-xl text-sm md:text-sm font-extralight tracking-tighter text-center lg:text-left mt-6 text-white"
