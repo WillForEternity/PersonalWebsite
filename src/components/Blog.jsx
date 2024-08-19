@@ -43,7 +43,7 @@ const Blog = () => {
         <h1 className=" text-2xl font-bold mb-3 text-left bg-clip-text">
           Writings:
         </h1>
-        <p className='pb-8 font-light text-left'> (click `W` icon above to lock, click again to exit) </p>
+        <p className='pb-8 font-light text-left'> (click `W` icon above to lock, click again to exit, drag icon to see more, scroll to navigate.) </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {posts.map((post, index) => (
             <BlogPost key={index} title={post.title} content={post.content} />
