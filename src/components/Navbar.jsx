@@ -202,7 +202,7 @@ const Navbar = () => {
           <MdDragHandle size={24} color="black" />
         </div>
         <div className="relative" style={{
-          transform: `translateY(calc(-${blogHeight}vh + 30px))`,
+          transform: `translateY(calc(-${blogHeight}vh + 50px))`,
           transition: 'transform 0.05s ease-out',
         }}>
           <div className="pt-6">
