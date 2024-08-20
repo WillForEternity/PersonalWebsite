@@ -195,13 +195,16 @@ const Navbar = () => {
       >
         <div 
           ref={dragHandleRef}
-          className="absolute top-0 left-0 w-full h-6 cursor-ns-resize flex items-center justify-center"
+          className="sticky top-0 left-0 w-full h-6 cursor-ns-resize flex items-center justify-center bg-white z-10"
           onMouseDown={handleDragStart}
           onTouchStart={handleTouchStart}
         >
           <MdDragHandle size={24} color="black" />
         </div>
-        <div className="pt-6">
+        <div className="relative" style={{
+          top: `-${blogHeight}vh`,
+          transition: 'top 0.05s ease-out',
+        }}>
           <Blog />
         </div>
       </div>
