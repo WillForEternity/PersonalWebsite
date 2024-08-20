@@ -21,7 +21,7 @@ const Background = () => {
       const svg = svgRef.current;
       if (!svg) return;
 
-      time += 0.13;
+      time += 0.11;
 
       const paths = svg.querySelectorAll('path');
       paths.forEach((path) => {
