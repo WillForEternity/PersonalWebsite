@@ -1,21 +1,31 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import logo from "../assets/W.png";
 import { FaLinkedin, FaGithub } from "react-icons/fa";
-import { MdDragHandle } from "react-icons/md";
+import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import Blog from './Blog';
 
 const Navbar = () => {
   const svgRef = useRef(null);
   const blogRef = useRef(null);
-  const dragHandleRef = useRef(null);
   const [isLogoHovered, setIsLogoHovered] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
-  const minBlogHeight = 12.5; // Minimum height of the blog section in vh
-  const maxBlogHeight = 85; // Maximum height of the blog section in vh
-  const [blogHeight, setBlogHeight] = useState(minBlogHeight);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startY, setStartY] = useState(0);
-  const [startHeight, setStartHeight] = useState(0);
+  const [isBlogExpanded, setIsBlogExpanded] = useState(false);
+
+  const toggleIconVariants = {
+    initial: { scale: 1, opacity: 0.8 },
+    animate: {
+      scale: [1.5, 2, 1.5],
+      opacity: [1, 0.3, 1],
+      transition: {
+        duration: 1,
+        times: [0, 0.2, 1], // Adjusted timing for bouncy effect
+        repeat: Infinity,
+        repeatType: "loop",
+        ease: "easeInOut",
+      }
+    }
+  };
 
   useEffect(() => {
     const generateChaoticPath = () => {
@@ -45,85 +55,11 @@ const Navbar = () => {
     animatePath();
   }, []);
 
-  useEffect(() => {
-    const handleMove = (clientY) => {
-      const delta = startY - clientY;
-      const newHeight = Math.max(minBlogHeight, Math.min(startHeight + delta / window.innerHeight * 100, maxBlogHeight));
-      setBlogHeight(newHeight);
-
-      // If dragged more than 5vh, snap to full height
-      if (newHeight > minBlogHeight + 5) {
-        setBlogHeight(maxBlogHeight);
-        setIsDragging(false);
-      }
-    };
-
-    const handleMouseMove = (e) => {
-      if (isDragging) {
-        e.preventDefault();
-        handleMove(e.clientY);
-      }
-    };
-
-    const handleTouchMove = (e) => {
-      if (isDragging) {
-        e.preventDefault();
-        const touch = e.touches[0];
-        handleMove(touch.clientY);
-      }
-    };
-
-    const handleEnd = () => {
-      setIsDragging(false);
-      // If blog height is greater than minimum, snap to full height
-      if (blogHeight > minBlogHeight) {
-        setBlogHeight(maxBlogHeight);
-      }
-      document.body.style.userSelect = 'auto';
-    };
-
-    if (isDragging) {
-      document.body.style.userSelect = 'none';
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('touchmove', handleTouchMove, { passive: false });
-      window.addEventListener('mouseup', handleEnd);
-      window.addEventListener('touchend', handleEnd);
-    }
-
-    return () => {
-      document.body.style.userSelect = 'auto';
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('mouseup', handleEnd);
-      window.removeEventListener('touchend', handleEnd);
-    };
-  }, [isDragging, startY, startHeight, blogHeight]);
-
-  const handleDragStart = (e) => {
-    if (blogHeight === maxBlogHeight) {
-      setBlogHeight(minBlogHeight);
-    } else {
-      setIsDragging(true);
-      setStartY(e.clientY);
-      setStartHeight(blogHeight);
-    }
-  };
-
-  const handleTouchStart = (e) => {
-    if (blogHeight === maxBlogHeight) {
-      setBlogHeight(minBlogHeight);
-    } else {
-      setIsDragging(true);
-      setStartY(e.touches[0].clientY);
-      setStartHeight(blogHeight);
-    }
-  };
-
   const handleLogoClick = () => {
     setIsLocked(!isLocked);
     setIsLogoHovered(!isLocked);
     if (!isLocked) {
-      setBlogHeight(minBlogHeight);
+      setIsBlogExpanded(false);
     }
   };
 
@@ -131,9 +67,13 @@ const Navbar = () => {
     if (!isLocked) {
       setIsLogoHovered(hovered);
       if (!hovered) {
-        setBlogHeight(minBlogHeight);
+        setIsBlogExpanded(false);
       }
     }
+  };
+
+  const toggleBlog = () => {
+    setIsBlogExpanded(!isBlogExpanded);
   };
 
   const isWhiteBackground = isLogoHovered || isLocked;
@@ -148,7 +88,7 @@ const Navbar = () => {
       />
       <nav className="fixed top-0 left-0 w-full px-4 sm:px-8 py-4 sm:py-6" style={{ zIndex: 30 }}>
         <div className="flex justify-between items-center">
-          <div className="p-2 sm:p-4 relative" style={{ zIndex: 30 }}>
+          <div className="flex items-center p-2 sm:p-4 relative" style={{ zIndex: 30 }}>
             <img 
               src={logo} 
               alt="logo" 
@@ -159,6 +99,9 @@ const Navbar = () => {
               onMouseLeave={() => handleLogoHover(false)}
               onClick={handleLogoClick}
             />
+            <span className="ml-2 text-2xl text-black font-roboto font-thin">
+              ill's Blog
+            </span>
           </div>
           <div className="relative p-2 sm:p-4">
             <svg 
@@ -200,26 +143,30 @@ const Navbar = () => {
       </nav>
       <div 
         ref={blogRef}
-        className={`fixed w-full bg-white text-black transition-all duration-300 border-t border-gray-200 ${
+        className={`fixed w-full bg-white text-black transition-all duration-300 ${
           isWhiteBackground ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`} 
         style={{ 
           zIndex: 20, 
-          height: '100vh',
-          top: `${100 - blogHeight}vh`,
-          transition: 'top 0.3s ease-out',
+          height: isBlogExpanded ? '82vh' : '50px',
+          bottom: 0,
+          transition: 'height 0.3s ease-out',
         }}
       >
         <div 
-          ref={dragHandleRef}
-          className="absolute top-0 left-0 w-full h-6 cursor-ns-resize flex items-center justify-center bg-white"
-          onMouseDown={handleDragStart}
-          onTouchStart={handleTouchStart}
+          className="absolute top-0 left-0 w-full h-12 bg-white border-t border-gray-200 flex items-center justify-center cursor-pointer"
+          onClick={toggleBlog}
         >
-          <MdDragHandle size={24} color="black" />
+          <motion.div 
+            initial="initial"
+            animate="animate"
+            variants={toggleIconVariants}
+          >
+            {isBlogExpanded ? <MdExpandMore size={24} color="black" /> : <MdExpandLess size={24} color="black" />}
+          </motion.div>
         </div>
-        <div className="h-full overflow-y-auto">
-          <div className="pt-6">
+        <div className="h-full overflow-y-auto pt-12">
+          <div className="px-4 pb-4">
             <Blog />
           </div>
         </div>
