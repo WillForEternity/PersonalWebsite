@@ -11,6 +11,7 @@ const Navbar = () => {
   const [isLogoHovered, setIsLogoHovered] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const minBlogHeight = 15; // Minimum height of the blog section in vh
+  const maxBlogHeight = 80; // Maximum height of the blog section in vh
   const [blogHeight, setBlogHeight] = useState(minBlogHeight);
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
@@ -47,12 +48,13 @@ const Navbar = () => {
   useEffect(() => {
     const handleMove = (clientY) => {
       const delta = startY - clientY;
-      const newHeight = Math.max(minBlogHeight, Math.min(startHeight + delta / window.innerHeight * 100, 90));
+      const newHeight = Math.max(minBlogHeight, Math.min(startHeight + delta / window.innerHeight * 100, maxBlogHeight));
       setBlogHeight(newHeight);
     };
 
     const handleMouseMove = (e) => {
       if (isDragging) {
+        e.preventDefault();
         handleMove(e.clientY);
       }
     };
@@ -67,9 +69,11 @@ const Navbar = () => {
 
     const handleEnd = () => {
       setIsDragging(false);
+      document.body.style.userSelect = 'auto';
     };
 
     if (isDragging) {
+      document.body.style.userSelect = 'none';
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('touchmove', handleTouchMove, { passive: false });
       window.addEventListener('mouseup', handleEnd);
@@ -77,6 +81,7 @@ const Navbar = () => {
     }
 
     return () => {
+      document.body.style.userSelect = 'auto';
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('mouseup', handleEnd);
@@ -185,7 +190,7 @@ const Navbar = () => {
           height: `${blogHeight}vh`, 
           maxHeight: `calc(100vh - 64px)`, // Adjusted for smaller navbar on mobile
           overflowY: 'auto',
-          transition: 'height 0.1s ease-out',
+          transition: 'height 0.05s ease-out', // Faster transition
         }}
       >
         <div 
@@ -196,7 +201,7 @@ const Navbar = () => {
         >
           <MdDragHandle size={24} color="black" />
         </div>
-        <div className="pt-0">
+        <div className="pt-6">
           <Blog />
         </div>
       </div>
