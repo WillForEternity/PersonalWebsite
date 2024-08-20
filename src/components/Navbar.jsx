@@ -183,28 +183,24 @@ const Navbar = () => {
       <div 
         ref={blogRef}
         className={`fixed w-full bg-white text-black transition-all duration-300 border-t border-gray-200 ${
-          isWhiteBackground ? 'opacity-100 bottom-0' : 'opacity-0 bottom-[-100%] pointer-events-none'
+          isWhiteBackground ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`} 
         style={{ 
           zIndex: 20, 
-          height: `${blogHeight}vh`, 
-          maxHeight: `calc(100vh - 64px)`, // Adjusted for smaller navbar on mobile
-          overflowY: 'auto',
-          transition: 'height 0.05s ease-out', // Faster transition
+          height: '100vh',
+          top: `${100 - blogHeight}vh`,
+          transition: 'top 0.05s ease-out',
         }}
       >
         <div 
           ref={dragHandleRef}
-          className="sticky top-0 left-0 w-full h-6 cursor-ns-resize flex items-center justify-center bg-white z-10"
+          className="absolute top-0 left-0 w-full h-6 cursor-ns-resize flex items-center justify-center bg-white"
           onMouseDown={handleDragStart}
           onTouchStart={handleTouchStart}
         >
           <MdDragHandle size={24} color="black" />
         </div>
-        <div className="relative" style={{
-          transform: `translateY(calc(-${blogHeight}vh + 50px))`,
-          transition: 'transform 0.05s ease-out',
-        }}>
+        <div className="h-full overflow-y-auto">
           <div className="pt-6">
             <Blog />
           </div>
