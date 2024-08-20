@@ -50,6 +50,12 @@ const Navbar = () => {
       const delta = startY - clientY;
       const newHeight = Math.max(minBlogHeight, Math.min(startHeight + delta / window.innerHeight * 100, maxBlogHeight));
       setBlogHeight(newHeight);
+
+      // If dragged more than 5vh, snap to full height
+      if (newHeight > minBlogHeight + 5) {
+        setBlogHeight(maxBlogHeight);
+        setIsDragging(false);
+      }
     };
 
     const handleMouseMove = (e) => {
@@ -69,6 +75,10 @@ const Navbar = () => {
 
     const handleEnd = () => {
       setIsDragging(false);
+      // If blog height is greater than minimum, snap to full height
+      if (blogHeight > minBlogHeight) {
+        setBlogHeight(maxBlogHeight);
+      }
       document.body.style.userSelect = 'auto';
     };
 
@@ -87,18 +97,26 @@ const Navbar = () => {
       window.removeEventListener('mouseup', handleEnd);
       window.removeEventListener('touchend', handleEnd);
     };
-  }, [isDragging, startY, startHeight]);
+  }, [isDragging, startY, startHeight, blogHeight]);
 
   const handleDragStart = (e) => {
-    setIsDragging(true);
-    setStartY(e.clientY);
-    setStartHeight(blogHeight);
+    if (blogHeight === maxBlogHeight) {
+      setBlogHeight(minBlogHeight);
+    } else {
+      setIsDragging(true);
+      setStartY(e.clientY);
+      setStartHeight(blogHeight);
+    }
   };
 
   const handleTouchStart = (e) => {
-    setIsDragging(true);
-    setStartY(e.touches[0].clientY);
-    setStartHeight(blogHeight);
+    if (blogHeight === maxBlogHeight) {
+      setBlogHeight(minBlogHeight);
+    } else {
+      setIsDragging(true);
+      setStartY(e.touches[0].clientY);
+      setStartHeight(blogHeight);
+    }
   };
 
   const handleLogoClick = () => {
@@ -189,7 +207,7 @@ const Navbar = () => {
           zIndex: 20, 
           height: '100vh',
           top: `${100 - blogHeight}vh`,
-          transition: 'top 0.05s ease-out',
+          transition: 'top 0.3s ease-out',
         }}
       >
         <div 
