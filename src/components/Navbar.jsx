@@ -10,7 +10,7 @@ const Navbar = () => {
   const dragHandleRef = useRef(null);
   const [isLogoHovered, setIsLogoHovered] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
-  const minBlogHeight = 10; // Minimum height of the blog section in vh
+  const minBlogHeight = 12.5; // Minimum height of the blog section in vh
   const maxBlogHeight = 85; // Maximum height of the blog section in vh
   const [blogHeight, setBlogHeight] = useState(minBlogHeight);
   const [isDragging, setIsDragging] = useState(false);
