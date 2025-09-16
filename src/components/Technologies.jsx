@@ -90,10 +90,8 @@ const Technologies = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h2 className="text-3xl font-light text-center mb-8 tracking-tight">
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-800 to-pink-900">
-          Technologies I've Built With:
-        </span>
+      <h2 className="text-3xl font-light text-center mb-8 tracking-tight text-white">
+        Technologies I've Built With:
       </h2>
       <div className="bg-gray-800 bg-opacity-30 backdrop-blur-sm rounded-lg shadow-lg p-6">
         <div className="flex flex-wrap -mx-6">

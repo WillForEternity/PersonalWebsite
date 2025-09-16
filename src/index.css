@@ -11,3 +11,18 @@
 .font-roboto {
   font-family: 'Roboto', sans-serif;
 }
+
+/* Gradient animation for project folders */
+@keyframes gradient-rotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.animate-gradient-x {
+  animation: gradient-rotate 6s linear infinite;
+  background-size: 200% 200%;
+}
