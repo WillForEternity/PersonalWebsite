@@ -56,7 +56,7 @@ const Hero = () => {
   };
 
   return (
-    <div ref={ref} className="min-h-screen flex items-center justify-center relative z-10">
+    <div ref={ref} className="hero-section min-h-screen flex items-center justify-center relative z-10">
       <div className="container mx-auto px-4">
         <motion.div
           variants={containerVariants}
@@ -67,14 +67,14 @@ const Hero = () => {
           <div className="w-full lg:w-1/2 lg:pr-12 mb-8 lg:mb-0">
             <motion.h1 
               variants={itemVariants}
-              className="text-6xl md:text-9xl font-thin tracking-tight text-white text-center lg:text-left"
+              className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-thin tracking-tight text-white text-center lg:text-left"
               style={textWithBorderStyle}
             >
               Will Norden
             </motion.h1>
             <motion.span 
               variants={itemVariants}
-              className="text-3xl md:text-3xl tracking-tight font-light text-center lg:text-left block mt-4"
+              className="text-xl sm:text-2xl md:text-3xl tracking-tight font-light text-center lg:text-left block mt-4"
             >
               <span className="hero-subtitle text-transparent bg-gradient-to-r from-blue-400 via-white to-cyan-400 bg-clip-text">
                 Aspiring AI scientist and hardware engineer

@@ -100,3 +100,80 @@ body.blog-active.clicking * {
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 }
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  /* Disable custom cursors on mobile - they don't work well on touch devices */
+  body, * {
+    cursor: auto !important;
+  }
+  
+  /* Ensure proper text wrapping on mobile */
+  .hero-subtitle {
+    word-break: break-word;
+    hyphens: auto;
+  }
+  
+  /* Reduce animation complexity on mobile for better performance */
+  .animate-gradient-x {
+    animation: none;
+  }
+  
+  /* Ensure content appears below navbar on mobile */
+  .hero-section {
+    padding-top: 5rem; /* Add space for navbar */
+  }
+  
+  /* Fix viewport and background coverage on mobile */
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+  }
+  
+  /* Ensure background covers full viewport */
+  .bg-gray-950 {
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+  }
+}
+
+/* Landscape mobile optimizations */
+@media (max-width: 768px) and (orientation: landscape) {
+  /* Ensure proper viewport coverage in landscape */
+  html, body {
+    height: 100vh;
+    height: 100dvh;
+    overflow-x: hidden;
+  }
+  
+  /* Background should cover full landscape viewport */
+  .bg-gray-950 {
+    min-height: 100vh;
+    min-height: 100dvh;
+    width: 100vw;
+  }
+  
+  /* Prevent zoom issues in landscape */
+  .container {
+    max-width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Adjust hero section for landscape */
+  .hero-section {
+    padding-top: 4rem;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
+/* Fix for mobile browsers with dynamic viewport */
+@supports (height: 100dvh) {
+  @media (max-width: 768px) {
+    .min-h-screen {
+      min-height: 100dvh;
+    }
+  }
+}

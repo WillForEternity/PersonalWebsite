@@ -113,9 +113,11 @@ const Background = ({ isEffectEnabled = true }) => {
     const squareSize = 32; // Smaller squares
     const gridSpacing = 32; // Tighter grid spacing
     
-    // Calculate how many squares fit on screen
-    const cols = Math.ceil(window.innerWidth / squareSize) + 4;
-    const rows = Math.ceil(window.innerHeight / squareSize) + 4;
+    // Calculate how many squares fit on screen - with mobile safety
+    const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
+    const screenHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
+    const cols = Math.ceil(screenWidth / squareSize) + 4;
+    const rows = Math.ceil(screenHeight / squareSize) + 4;
     
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
@@ -238,7 +240,7 @@ const Background = ({ isEffectEnabled = true }) => {
   }, [mousePos.x, mousePos.y, waveTime, clickRipples, hoverFadeAmount, isEffectEnabled]); // Memoize based on mouse position, wave time, ripples, fade amount, and effect toggle
 
   return (
-    <div className="fixed inset-0 w-full h-full overflow-hidden bg-gray-950 cursor-none">
+    <div className="fixed inset-0 w-full h-full overflow-hidden bg-gray-950 cursor-none touch-none">
       <svg ref={svgRef} className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern id="waving-grid" width="128" height="128" patternUnits="userSpaceOnUse">
