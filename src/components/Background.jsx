@@ -6,6 +6,7 @@ const Background = ({ isEffectEnabled = true }) => {
   const [waveTime, setWaveTime] = useState(0);
   const [clickRipples, setClickRipples] = useState([]);
   const [isHoveringButton, setIsHoveringButton] = useState(false);
+  const [hoverFadeAmount, setHoverFadeAmount] = useState(1); // 1 = full opacity, 0 = hidden
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -45,6 +46,33 @@ const Background = ({ isEffectEnabled = true }) => {
       window.removeEventListener('mousedown', handleMouseClick);
     };
   }, []);
+
+  // Smooth transition for hover fade effect
+  useEffect(() => {
+    let animationFrame;
+    const targetFade = isHoveringButton ? 0 : 1;
+    const fadeSpeed = 0.05; // Adjust speed of fade transition
+    
+    const animateFade = () => {
+      setHoverFadeAmount(current => {
+        const diff = targetFade - current;
+        if (Math.abs(diff) < 0.01) {
+          return targetFade; // Snap to target when very close
+        }
+        return current + (diff * fadeSpeed);
+      });
+      
+      animationFrame = requestAnimationFrame(animateFade);
+    };
+    
+    animateFade();
+    
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [isHoveringButton]);
 
   useEffect(() => {
     const generateSmoothWave = (time) => {
@@ -177,10 +205,12 @@ const Background = ({ isEffectEnabled = true }) => {
         
         opacity += rippleBoost;
         
-        // 🎯 BUTTON HOVER HIDE - Completely hide squares when hovering over interactive elements
+        // 🎯 GRADUAL BUTTON HOVER FADE - Smoothly fade squares when hovering over interactive elements
         // 🔄 TOGGLE CONTROL - Hide squares when effect is disabled
-        if (isHoveringButton || !isEffectEnabled) {
-          opacity = 0; // Completely hide when hovering over buttons or effect disabled
+        if (!isEffectEnabled) {
+          opacity = 0; // Instantly hide when effect disabled
+        } else {
+          opacity *= hoverFadeAmount; // Apply gradual fade based on hover state
         }
         
         if (opacity > 0.01) {
@@ -205,7 +235,7 @@ const Background = ({ isEffectEnabled = true }) => {
     }
     
     return squares;
-  }, [mousePos.x, mousePos.y, waveTime, clickRipples, isHoveringButton, isEffectEnabled]); // Memoize based on mouse position, wave time, ripples, button hover state, and effect toggle
+  }, [mousePos.x, mousePos.y, waveTime, clickRipples, hoverFadeAmount, isEffectEnabled]); // Memoize based on mouse position, wave time, ripples, fade amount, and effect toggle
 
   return (
     <div className="fixed inset-0 w-full h-full overflow-hidden bg-gray-950 cursor-none">
