@@ -250,7 +250,7 @@ const Background = ({ isEffectEnabled = true }) => {
                 d={`M ${x} 0 L ${x} 160`} 
                 fill="none" 
                 stroke="rgba(255,255,255,0.7)" 
-                strokeWidth="0.7"
+                strokeWidth="1.5"
                 transform={`translate(${x} 0) rotate(90)`}
               />
             ))}
