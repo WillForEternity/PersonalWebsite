@@ -15,12 +15,12 @@ body.clicking * {
   cursor: var(--cursor-click) 12 12, crosshair !important;
 }
 
-/* Custom cursor SVGs */
+/* Custom cursor SVGs - using data URIs for deployment compatibility */
 :root {
-  --cursor-hover: url('./src/assets/icons/cursor-hover.svg');
-  --cursor-click: url('./src/assets/icons/cursor-click.svg');
-  --cursor-hover-inverted: url('./src/assets/icons/cursor-hover-inverted.svg');
-  --cursor-click-inverted: url('./src/assets/icons/cursor-click-inverted.svg');
+  --cursor-hover: url("data:image/svg+xml,%3csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M10 4v12M4 10h12' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M3 3h4M3 3v4' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M17 3h-4M17 3v4' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M3 17h4M3 17v-4' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M17 17h-4M17 17v-4' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3e%3c/svg%3e");
+  --cursor-click: url("data:image/svg+xml,%3csvg width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12 6v12M6 12h12' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M2 2h5M2 2v5' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M22 2h-5M22 2v5' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M2 22h5M2 22v-5' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M22 22h-5M22 22v-5' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3e%3c/svg%3e");
+  --cursor-hover-inverted: url("data:image/svg+xml,%3csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M10 4v12M4 10h12' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M3 3h4M3 3v4' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M17 3h-4M17 3v4' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M3 17h4M3 17v-4' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M17 17h-4M17 17v-4' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3e%3c/svg%3e");
+  --cursor-click-inverted: url("data:image/svg+xml,%3csvg width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12 6v12M6 12h12' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M2 2h5M2 2v5' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M22 2h-5M22 2v5' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M2 22h5M2 22v-5' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3e%3cpath d='M22 22h-5M22 22v-5' stroke='black' stroke-width='1.5' stroke-linecap='round'/%3e%3c/svg%3e");
 }
 
 /* Interactive elements keep the same hover cursor (already set globally) */
