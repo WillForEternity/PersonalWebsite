@@ -4,15 +4,15 @@ import { motion } from 'framer-motion';
 // Import your SVG files
 import CProgramming from '../assets/icons/c.svg';
 import Python from '../assets/icons/python.svg';
-import Mistral from '../assets/icons/mistral-ai.svg';
+import Gemini from '../assets/icons/google-gemini.svg';
 import PyTorch from '../assets/icons/pytorch.svg';
 import Numpy from '../assets/icons/numpy.svg';
 import ReactIcon from '../assets/icons/react.svg';
-import Anthropic from '../assets/icons/anthropic.svg';
+import Claude from '../assets/icons/claude-icon.svg';
 import Javascript from '../assets/icons/javascript.svg';
-import Openai from '../assets/icons/openai.svg';
+import Openai from '../assets/icons/openai-icon.svg';
 import Raspberry from '../assets/icons/raspberry-pi.svg';
-import Arduino from '../assets/icons/arduino.svg';
+import Renesas from '../assets/icons/Renesas_Electronics_logo.svg';
 import Nvidia from '../assets/icons/nvidia.svg';
 
 const TechItem = ({ icon: Icon, invert }) => {
@@ -73,23 +73,23 @@ const Technologies = () => {
     {
       title: "Models",
       items: [
-        { icon: Anthropic, invert: true },
+        { icon: Claude, invert: true },
         { icon: Openai, invert: true },
-        { icon: Mistral, invert: true },
+        { icon: Gemini, invert: false },
       ]
     },
     {
         title: "Hardware",
         items: [
           { icon: Raspberry, invert: false },
-          { icon: Arduino, invert: false },
+          { icon: Renesas, invert: false },
           { icon: Nvidia, invert: true },
         ]
     },
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 mt-20">
       <h2 className="text-3xl font-light text-center mb-8 tracking-tight text-white">
         Technologies I've Built With:
       </h2>

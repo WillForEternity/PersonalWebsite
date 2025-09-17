@@ -5,7 +5,7 @@ import { FaLinkedin, FaGithub } from "react-icons/fa";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import Blog from './Blog';
 
-const Navbar = () => {
+const Navbar = ({ onBlogStateChange }) => {
   const svgRef = useRef(null);
   const blogRef = useRef(null);
   const [isLogoHovered, setIsLogoHovered] = useState(false);
@@ -78,6 +78,13 @@ const Navbar = () => {
 
   const isWhiteBackground = isLogoHovered || isLocked;
 
+  // Notify parent component when blog state changes
+  useEffect(() => {
+    if (onBlogStateChange) {
+      onBlogStateChange(isWhiteBackground);
+    }
+  }, [isWhiteBackground, onBlogStateChange]);
+
   return (
     <div className="relative">
       <div 
@@ -86,9 +93,9 @@ const Navbar = () => {
         }`}
         style={{ zIndex: 10 }}
       />
-      <nav className="fixed top-0 left-0 w-full px-4 sm:px-8 py-4 sm:py-6" style={{ zIndex: 30 }}>
+      <nav className="fixed top-0 left-0 w-full px-4 sm:px-8 py-4 sm:py-6 pointer-events-none" style={{ zIndex: 30 }}>
         <div className="flex justify-between items-center">
-          <div className="flex items-center p-2 sm:p-4 relative" style={{ zIndex: 30 }}>
+          <div className="flex items-center p-2 sm:p-4 relative pointer-events-auto" style={{ zIndex: 30 }}>
             <img 
               src={logo} 
               alt="logo" 
@@ -103,7 +110,7 @@ const Navbar = () => {
               ill's Blog
             </span>
           </div>
-          <div className="relative p-2 sm:p-4">
+          <div className="relative p-2 sm:p-4 pointer-events-auto">
             <svg 
               ref={svgRef} 
               className={`absolute inset-0 w-full h-full pointer-events-none transition-all duration-300 ${
@@ -122,7 +129,7 @@ const Navbar = () => {
               isWhiteBackground ? 'filter invert' : ''
             }`}>
               <a 
-                href="https://www.linkedin.com/in/will-norden-609377234/" 
+                href="https://www.linkedin.com/in/william-norden/" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="text-white"

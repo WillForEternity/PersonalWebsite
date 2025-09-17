@@ -14,8 +14,8 @@ const RepositoryCard = ({ project, index }) => {
   return (
     <div
       onClick={handleCardClick}
-      className={`bg-neutral-900 border border-neutral-700 rounded-lg p-4 hover:border-neutral-600 transition-all duration-200 ${
-        project.githubUrl && project.githubUrl !== "#" ? "cursor-pointer hover:bg-neutral-800" : ""
+      className={`bg-neutral-900 border border-neutral-700 rounded-lg p-4 hover:border-neutral-500 transition-all duration-200 ${
+        project.githubUrl && project.githubUrl !== "#" ? "cursor-pointer hover:bg-neutral-700" : ""
       }`}
     >
       {/* Repository Header */}
@@ -105,12 +105,46 @@ const RepositoryCard = ({ project, index }) => {
 };
 
 // Directory Section Component
-const DirectorySection = ({ categoryKey, category, projects, isExpanded, onToggle }) => {
+const DirectorySection = ({ categoryKey, category, projects, isExpanded, onToggle, index }) => {
+  const controls = useAnimation();
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  React.useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
+
+  const slideInVariants = {
+    hidden: { 
+      x: -100,
+      opacity: 0
+    },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        delay: index * 0.15,
+        ease: "easeOut"
+      }
+    }
+  };
+
   return (
-    <div className="mb-8">
+    <motion.div 
+      ref={ref}
+      variants={slideInVariants}
+      initial="hidden"
+      animate={controls}
+      className="mb-8"
+    >
       {/* Directory Header */}
       <div 
-        className="flex items-center space-x-3 mb-4 cursor-pointer hover:bg-neutral-800/50 p-2 rounded-lg transition-all duration-300 group"
+        className="flex items-center space-x-3 mb-4 cursor-pointer hover:bg-neutral-700/80 p-2 rounded-lg transition-all duration-300 group"
         onClick={() => onToggle(categoryKey)}
       >
         <div className="text-transparent bg-gradient-to-r from-blue-400 via-white to-cyan-400 bg-clip-text animate-gradient-x group-hover:from-cyan-400 group-hover:via-blue-500 group-hover:to-white transition-all duration-500">
@@ -166,7 +200,7 @@ const DirectorySection = ({ categoryKey, category, projects, isExpanded, onToggl
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -222,11 +256,8 @@ const Projects = () => {
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-4">Projects</h1>
           <div className="bg-neutral-900 border border-neutral-700 rounded-lg p-4 max-w-2xl mx-auto">
-            <div className="font-mono text-sm">
-              <span className="text-purple-400">will@portfolio</span>
-              <span className="text-neutral-300">:</span>
-              <span className="text-cyan-400">~/projects</span>
-              <span className="text-neutral-300">$ ls -la</span>
+            <div className="font-mono text-sm text-white">
+              will@portfolio:~/projects$ ls -la
             </div>
           </div>
         </div>
@@ -234,7 +265,7 @@ const Projects = () => {
 
       {/* Project Categories */}
       <div className="max-w-6xl mx-auto px-4">
-        {Object.entries(PROJECT_CATEGORIES).map(([categoryKey, category]) => (
+        {Object.entries(PROJECT_CATEGORIES).map(([categoryKey, category], index) => (
           <DirectorySection
             key={categoryKey}
             categoryKey={categoryKey}
@@ -242,6 +273,7 @@ const Projects = () => {
             projects={PROJECTS[categoryKey] || []}
             isExpanded={expandedCategories[categoryKey]}
             onToggle={toggleCategory}
+            index={index}
           />
         ))}
       </div>

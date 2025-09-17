@@ -56,7 +56,7 @@ const Hero = () => {
   };
 
   return (
-    <div ref={ref} className="py-28 lg:py-36 pt-32 lg:pt-40 relative z-10"> {/* Increased top padding */}
+    <div ref={ref} className="min-h-screen flex items-center justify-center relative z-10">
       <div className="container mx-auto px-4">
         <motion.div
           variants={containerVariants}

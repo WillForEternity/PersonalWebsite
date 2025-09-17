@@ -4,6 +4,72 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Show custom cursor everywhere */
+body, * {
+  cursor: var(--cursor-hover) 10 10, crosshair !important;
+}
+
+/* Global click state - applied via JavaScript */
+body.clicking, 
+body.clicking * {
+  cursor: var(--cursor-click) 12 12, crosshair !important;
+}
+
+/* Custom cursor SVGs */
+:root {
+  --cursor-hover: url('./src/assets/icons/cursor-hover.svg');
+  --cursor-click: url('./src/assets/icons/cursor-click.svg');
+  --cursor-hover-inverted: url('./src/assets/icons/cursor-hover-inverted.svg');
+  --cursor-click-inverted: url('./src/assets/icons/cursor-click-inverted.svg');
+}
+
+/* Interactive elements keep the same hover cursor (already set globally) */
+
+/* Click cursor with separated square corners */
+button:active,
+button:active *,
+a[href]:active,
+a[href]:active *,
+[onclick]:active,
+[onclick]:active *,
+[role="button"]:active,
+[role="button"]:active *,
+.cursor-pointer:active,
+.cursor-pointer:active *,
+input:not([type="hidden"]):active,
+select:active,
+textarea:active {
+  cursor: var(--cursor-click) 12 12, crosshair !important;
+}
+
+/* Inverted cursors for blog section - override global cursor */
+.blog-active,
+.blog-active * {
+  cursor: var(--cursor-hover-inverted) 10 10, crosshair !important;
+}
+
+/* Blog mode click state */
+body.blog-active.clicking,
+body.blog-active.clicking * {
+  cursor: var(--cursor-click-inverted) 12 12, crosshair !important;
+}
+
+.blog-active button:active,
+.blog-active button:active *,
+.blog-active a[href]:active,
+.blog-active a[href]:active *,
+.blog-active [onclick]:active,
+.blog-active [onclick]:active *,
+.blog-active [role="button"]:active,
+.blog-active [role="button"]:active *,
+.blog-active .cursor-pointer:active,
+.blog-active .cursor-pointer:active *,
+.blog-active input:not([type="hidden"]):active,
+.blog-active select:active,
+.blog-active textarea:active {
+  cursor: var(--cursor-click-inverted) 12 12, crosshair !important;
+}
+
 :root {
   font-family: "Inter", sans-serif;
 }
