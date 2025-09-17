@@ -124,48 +124,33 @@ body.blog-active.clicking * {
     padding-top: 5rem; /* Add space for navbar */
   }
   
-  /* Fix viewport and background coverage on mobile */
+  /* Gentle mobile viewport fixes */
   html, body {
     overflow-x: hidden;
-    width: 100%;
-    position: relative;
-  }
-  
-  /* Ensure background covers full viewport */
-  .bg-gray-950 {
-    min-height: 100vh;
-    min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
   }
 }
 
 /* Landscape mobile optimizations */
 @media (max-width: 768px) and (orientation: landscape) {
-  /* Ensure proper viewport coverage in landscape */
-  html, body {
-    height: 100vh;
-    height: 100dvh;
-    overflow-x: hidden;
+  /* Natural form-fit scaling for landscape */
+  .hero-section {
+    padding-top: 3rem;
+    padding-bottom: 2rem;
   }
   
-  /* Background should cover full landscape viewport */
-  .bg-gray-950 {
-    min-height: 100vh;
-    min-height: 100dvh;
-    width: 100vw;
-  }
-  
-  /* Prevent zoom issues in landscape */
+  /* Ensure content fits naturally without forced scaling */
   .container {
-    max-width: 100%;
     padding-left: 1rem;
     padding-right: 1rem;
   }
   
-  /* Adjust hero section for landscape */
-  .hero-section {
-    padding-top: 4rem;
-    min-height: 100vh;
-    min-height: 100dvh;
+  /* Allow natural text scaling in landscape */
+  .hero-section h1 {
+    font-size: clamp(2rem, 8vw, 4rem) !important;
+  }
+  
+  .hero-section .hero-subtitle {
+    font-size: clamp(1rem, 4vw, 1.5rem) !important;
   }
 }
 
