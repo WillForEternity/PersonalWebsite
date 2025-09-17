@@ -92,3 +92,11 @@ body.blog-active.clicking * {
   animation: gradient-rotate 6s linear infinite;
   background-size: 200% 200%;
 }
+
+/* Hero subtitle gradient - changes in blog mode */
+.blog-active .hero-subtitle {
+  background: linear-gradient(to right, #f9a8d4, #64748b, #a855f7) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}

@@ -74,9 +74,11 @@ const Hero = () => {
             </motion.h1>
             <motion.span 
               variants={itemVariants}
-              className="bg-gradient-to-r from-pink-300 via-slate-700 to-purple-700 bg-clip-text text-3xl md:text-3xl tracking-tight text-transparent font-light text-center lg:text-left block mt-4"
+              className="text-3xl md:text-3xl tracking-tight font-light text-center lg:text-left block mt-4"
             >
-              Aspiring deep learning scientist and hardware engineer
+              <span className="hero-subtitle text-transparent bg-gradient-to-r from-blue-400 via-white to-cyan-400 bg-clip-text">
+                Aspiring AI scientist and hardware engineer
+              </span>
             </motion.span>
             <motion.p 
               variants={itemVariants}

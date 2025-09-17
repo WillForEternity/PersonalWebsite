@@ -6,12 +6,12 @@ import CProgramming from '../assets/icons/c.svg';
 import Python from '../assets/icons/python.svg';
 import Gemini from '../assets/icons/google-gemini.svg';
 import PyTorch from '../assets/icons/pytorch.svg';
-import Numpy from '../assets/icons/numpy.svg';
+import TensorFlow from '../assets/icons/tensorflow.svg';
 import ReactIcon from '../assets/icons/react.svg';
 import Claude from '../assets/icons/claude-icon.svg';
 import Javascript from '../assets/icons/javascript.svg';
 import Openai from '../assets/icons/openai-icon.svg';
-import Raspberry from '../assets/icons/raspberry-pi.svg';
+import STMicroelectronics from '../assets/icons/ST_logo_2020_blue_V.svg';
 import Renesas from '../assets/icons/Renesas_Electronics_logo.svg';
 import Nvidia from '../assets/icons/nvidia.svg';
 
@@ -63,10 +63,10 @@ const Technologies = () => {
       ]
     },
     {
-      title: "Frameworks/Technologies",
+      title: "Frmwrks/Libs",
       items: [
         { icon: PyTorch, invert: true },
-        { icon: Numpy, invert: false },
+        { icon: TensorFlow, invert: true },
         { icon: ReactIcon, invert: false },
       ]
     },
@@ -81,7 +81,7 @@ const Technologies = () => {
     {
         title: "Hardware",
         items: [
-          { icon: Raspberry, invert: false },
+          { icon: STMicroelectronics, invert: false },
           { icon: Renesas, invert: false },
           { icon: Nvidia, invert: true },
         ]
@@ -91,7 +91,7 @@ const Technologies = () => {
   return (
     <div className="container mx-auto px-4 py-8 mt-20">
       <h2 className="text-3xl font-light text-center mb-8 tracking-tight text-white">
-        Technologies I've Built With:
+        Technologies I Build With:
       </h2>
       <div className="bg-gray-800 bg-opacity-30 backdrop-blur-sm rounded-lg shadow-lg p-6">
         <div className="flex flex-wrap -mx-6">

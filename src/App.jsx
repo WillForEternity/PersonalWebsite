@@ -43,13 +43,15 @@ function App() {
         </div>
       </div>
       
-      {/* Toggle button for mouse effect - outside Background component */}
-      <button
-        onClick={() => setIsMouseEffectEnabled(!isMouseEffectEnabled)}
-        className="fixed bottom-4 right-4 text-neutral-500 hover:text-white text-xs font-mono transition-colors duration-200 z-50"
-      >
-        [toggle mouse effect]
-      </button>
+      {/* Toggle button for mouse effect - outside Background component, hidden in blog mode */}
+      {!isBlogActive && (
+        <button
+          onClick={() => setIsMouseEffectEnabled(!isMouseEffectEnabled)}
+          className="fixed bottom-4 right-4 text-neutral-500 hover:text-white text-xs font-mono transition-colors duration-200 z-50"
+        >
+          [toggle mouse effect]
+        </button>
+      )}
     </div>
   );
 }
