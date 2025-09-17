@@ -14,8 +14,8 @@ const RepositoryCard = ({ project, index }) => {
   return (
     <div
       onClick={handleCardClick}
-      className={`bg-neutral-900 border border-neutral-700 rounded-lg p-4 hover:border-neutral-500 transition-all duration-200 ${
-        project.githubUrl && project.githubUrl !== "#" ? "cursor-pointer hover:bg-neutral-700" : ""
+      className={`bg-neutral-900 border border-neutral-700 rounded-lg p-4 ${
+        project.githubUrl && project.githubUrl !== "#" ? "cursor-pointer" : ""
       }`}
     >
       {/* Repository Header */}

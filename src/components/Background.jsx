@@ -1,14 +1,22 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 
-const Background = () => {
+const Background = ({ isEffectEnabled = true }) => {
   const svgRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [waveTime, setWaveTime] = useState(0);
   const [clickRipples, setClickRipples] = useState([]);
+  const [isHoveringButton, setIsHoveringButton] = useState(false);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePos({ x: e.clientX, y: e.clientY });
+      
+      // Check if hovering over interactive elements
+      const target = e.target;
+      const isInteractive = target.matches('button, a[href], [onclick], [role="button"], .cursor-pointer, input:not([type="hidden"]), select, textarea') ||
+                           target.closest('button, a[href], [onclick], [role="button"], .cursor-pointer, input:not([type="hidden"]), select, textarea');
+      
+      setIsHoveringButton(isInteractive);
     };
 
     const handleMouseClick = (e) => {
@@ -169,6 +177,12 @@ const Background = () => {
         
         opacity += rippleBoost;
         
+        // 🎯 BUTTON HOVER HIDE - Completely hide squares when hovering over interactive elements
+        // 🔄 TOGGLE CONTROL - Hide squares when effect is disabled
+        if (isHoveringButton || !isEffectEnabled) {
+          opacity = 0; // Completely hide when hovering over buttons or effect disabled
+        }
+        
         if (opacity > 0.01) {
           squares.push(
             <rect
@@ -191,7 +205,7 @@ const Background = () => {
     }
     
     return squares;
-  }, [mousePos.x, mousePos.y, waveTime, clickRipples]); // Memoize based on mouse position, wave time, and ripples
+  }, [mousePos.x, mousePos.y, waveTime, clickRipples, isHoveringButton, isEffectEnabled]); // Memoize based on mouse position, wave time, ripples, button hover state, and effect toggle
 
   return (
     <div className="fixed inset-0 w-full h-full overflow-hidden bg-gray-950 cursor-none">
@@ -227,6 +241,7 @@ const Background = () => {
       <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
         {waveFollowingSquares}
       </svg>
+      
     </div>
   );
 };

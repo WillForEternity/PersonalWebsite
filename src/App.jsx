@@ -8,6 +8,7 @@ import Projects from './components/Projects';
 
 function App() {
   const [isBlogActive, setIsBlogActive] = useState(false);
+  const [isMouseEffectEnabled, setIsMouseEffectEnabled] = useState(true);
 
   useEffect(() => {
     const handleMouseDown = () => {
@@ -31,7 +32,7 @@ function App() {
 
   return (
     <div className={`flex flex-col min-h-screen overflow-x-hidden text-neutral-300 antialiased selection:bg-cyan-300 selection:text-cyan-900 ${isBlogActive ? 'blog-active' : ''}`}>
-      <Background />
+      <Background isEffectEnabled={isMouseEffectEnabled} />
       <div className="relative z-10">
         <Navbar onBlogStateChange={setIsBlogActive} />
         <Hero />
@@ -41,6 +42,14 @@ function App() {
           <Projects />
         </div>
       </div>
+      
+      {/* Toggle button for mouse effect - outside Background component */}
+      <button
+        onClick={() => setIsMouseEffectEnabled(!isMouseEffectEnabled)}
+        className="fixed bottom-4 right-4 text-neutral-500 hover:text-white text-xs font-mono transition-colors duration-200 z-50"
+      >
+        [toggle mouse effect]
+      </button>
     </div>
   );
 }
