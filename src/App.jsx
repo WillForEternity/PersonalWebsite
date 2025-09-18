@@ -56,12 +56,12 @@ function App() {
           >
             [toggle mouse effect]
           </button>
-          <button
+          {/* <button
             onClick={() => setIsFishEffectEnabled(!isFishEffectEnabled)}
             className="text-neutral-500 hover:text-white text-xs font-mono transition-colors duration-200"
           >
             [toggle fish effect]
-          </button>
+          </button> */}
           <button
             onClick={() => setAreFishHidden(!areFishHidden)}
             className="text-neutral-500 hover:text-white text-xs font-mono transition-colors duration-200"

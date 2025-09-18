@@ -477,9 +477,9 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
       const opacity = 0.25;
       
       // Draw predator field of view
-      if (this.species === 'carnivore') {
-        this.drawFieldOfView(ctx, opacity);
-      }
+      // if (this.species === 'carnivore') {
+      //   this.drawFieldOfView(ctx, opacity);
+      // }
       
       // Draw trail only for predators
       if (this.species === 'carnivore') {
@@ -578,51 +578,51 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
       ctx.fill();
     }
 
-    drawFieldOfView(ctx, baseOpacity) {
-      const angle = Math.atan2(this.velocity.y, this.velocity.x);
-      const fovOpacity = baseOpacity * 1.2; // Much brighter cone glow
-      const coneAngle = Math.PI / 8; // 30 degree cone (15 degrees each side) - narrower beams
-      const eyeOffset = this.size * 1.2; // Distance from center along body - moved forward
-      const eyeSeparation = this.size * 0.5; // Distance between eyes - closer together
-      
-      ctx.save();
-      ctx.translate(this.position.x, this.position.y);
-      ctx.rotate(angle);
-      
-      // Draw two side-mounted eye cones (shark-like) with narrower beams
-      this.drawSideEyeCone(ctx, fovOpacity, coneAngle, eyeOffset, -eyeSeparation / 2, -Math.PI / 25); // Left eye (less angled)
-      this.drawSideEyeCone(ctx, fovOpacity, coneAngle, eyeOffset, eyeSeparation / 2, Math.PI / 25);   // Right eye (less angled)
-      
-      ctx.restore();
-    }
+    // drawFieldOfView(ctx, baseOpacity) {
+    //   const angle = Math.atan2(this.velocity.y, this.velocity.x);
+    //   const fovOpacity = baseOpacity * 1.2; // Much brighter cone glow
+    //   const coneAngle = Math.PI / 8; // 30 degree cone (15 degrees each side) - narrower beams
+    //   const eyeOffset = this.size * 1.2; // Distance from center along body - moved forward
+    //   const eyeSeparation = this.size * 0.5; // Distance between eyes - closer together
+    //   
+    //   ctx.save();
+    //   ctx.translate(this.position.x, this.position.y);
+    //   ctx.rotate(angle);
+    //   
+    //   // Draw two side-mounted eye cones (shark-like) with narrower beams
+    //   this.drawSideEyeCone(ctx, fovOpacity, coneAngle, eyeOffset, -eyeSeparation / 2, -Math.PI / 25); // Left eye (less angled)
+    //   this.drawSideEyeCone(ctx, fovOpacity, coneAngle, eyeOffset, eyeSeparation / 2, Math.PI / 25);   // Right eye (less angled)
+    //   
+    //   ctx.restore();
+    // }
 
-    drawSideEyeCone(ctx, fovOpacity, coneAngle, eyeOffset, eyeY, eyeAngle) {
-      ctx.save();
-      
-      // Position at eye location (side of head)
-      ctx.translate(eyeOffset, eyeY);
-      ctx.rotate(eyeAngle); // Angle the eye outward from the head
-      
-      // Create cone-shaped field of view from eye position
-      ctx.beginPath();
-      ctx.moveTo(0, 0); // Start at eye position
-      
-      // Draw cone arc angled outward - extended range
-      ctx.arc(0, 0, this.perceptionRadius * 1.0, -coneAngle / 2, coneAngle / 2);
-      ctx.closePath();
-      
-      // Create gradient from eye position to edge of cone
-      const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.perceptionRadius * 1.0);
-      gradient.addColorStop(0, `rgba(255, 255, 255, ${fovOpacity * 0.6})`);
-      gradient.addColorStop(0.3, `rgba(255, 255, 255, ${fovOpacity * 0.35})`);
-      gradient.addColorStop(0.7, `rgba(255, 255, 255, ${fovOpacity * 0.15})`);
-      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-      
-      ctx.fillStyle = gradient;
-      ctx.fill();
-      
-      ctx.restore();
-    }
+    // drawSideEyeCone(ctx, fovOpacity, coneAngle, eyeOffset, eyeY, eyeAngle) {
+    //   ctx.save();
+    //   
+    //   // Position at eye location (side of head)
+    //   ctx.translate(eyeOffset, eyeY);
+    //   ctx.rotate(eyeAngle); // Angle the eye outward from the head
+    //   
+    //   // Create cone-shaped field of view from eye position
+    //   ctx.beginPath();
+    //   ctx.moveTo(0, 0); // Start at eye position
+    //   
+    //   // Draw cone arc angled outward - extended range
+    //   ctx.arc(0, 0, this.perceptionRadius * 1.0, -coneAngle / 2, coneAngle / 2);
+    //   ctx.closePath();
+    //   
+    //   // Create gradient from eye position to edge of cone
+    //   const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.perceptionRadius * 1.0);
+    //   gradient.addColorStop(0, `rgba(255, 255, 255, ${fovOpacity * 0.6})`);
+    //   gradient.addColorStop(0.3, `rgba(255, 255, 255, ${fovOpacity * 0.35})`);
+    //   gradient.addColorStop(0.7, `rgba(255, 255, 255, ${fovOpacity * 0.15})`);
+    //   gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    //   
+    //   ctx.fillStyle = gradient;
+    //   ctx.fill();
+    //   
+    //   ctx.restore();
+    // }
   }
 
   // Food class (visible white dots with glow)
