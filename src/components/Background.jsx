@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 
 const Background = ({ isEffectEnabled = true }) => {
   const svgRef = useRef(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [mousePos, setMousePos] = useState({ 
+    x: typeof window !== 'undefined' ? window.innerWidth / 2 : 0, 
+    y: typeof window !== 'undefined' ? window.innerHeight / 2 : 0 
+  });
   const [waveTime, setWaveTime] = useState(0);
   const [clickRipples, setClickRipples] = useState([]);
   const [isHoveringButton, setIsHoveringButton] = useState(false);
@@ -153,17 +156,17 @@ const Background = ({ isEffectEnabled = true }) => {
         let opacity = 0;
         let scale = 1;
         if (distance < 35) {
-          opacity = 0.5; // Brightest core (unchanged)
+          opacity = 0.6; // Brighter core (was 0.5)
           scale = 1.2; // Slight scale up for closest squares
         } else if (distance < 70) {
-          opacity = 0.2; // Dimmer inner ring (was 0.25)
+          opacity = 0.25; // Brighter inner ring (was 0.2)
           scale = 1.1;
         } else if (distance < 105) {
-          opacity = 0.08; // Much dimmer medium ring (was 0.15)
+          opacity = 0.12; // Brighter medium ring (was 0.08)
         } else if (distance < 140) {
-          opacity = 0.04; // Very dim far ring (was 0.08)
+          opacity = 0.06; // Brighter far ring (was 0.04)
         } else if (distance < 175) {
-          opacity = 0.015; // Barely visible edge (was 0.03)
+          opacity = 0.025; // Brighter edge (was 0.015)
         }
         
         // ✨ WAVE-BASED INTENSITY MODULATION
@@ -240,7 +243,7 @@ const Background = ({ isEffectEnabled = true }) => {
   }, [mousePos.x, mousePos.y, waveTime, clickRipples, hoverFadeAmount, isEffectEnabled]); // Memoize based on mouse position, wave time, ripples, fade amount, and effect toggle
 
   return (
-    <div className="fixed inset-0 w-full h-full overflow-hidden bg-gray-950 cursor-none touch-none">
+    <div className="fixed inset-0 w-full h-full overflow-hidden bg-gray-950 cursor-none touch-none" style={{ backgroundColor: '#070e1a' }}>
       <svg ref={svgRef} className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern id="waving-grid" width="128" height="128" patternUnits="userSpaceOnUse">
