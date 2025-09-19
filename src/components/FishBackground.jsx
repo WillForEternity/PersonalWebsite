@@ -748,6 +748,7 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
       canvas.height = window.innerHeight;
     };
 
+
     // Mouse tracking for respawn location
     const handleMouseMove = (event) => {
       if (!isEffectEnabled) return;

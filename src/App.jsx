@@ -12,6 +12,7 @@ function App() {
   const [isMouseEffectEnabled, setIsMouseEffectEnabled] = useState(true);
   const [isFishEffectEnabled, setIsFishEffectEnabled] = useState(true);
   const [areFishHidden, setAreFishHidden] = useState(true);
+  const [isContentVisible, setIsContentVisible] = useState(false);
 
   useEffect(() => {
     const handleMouseDown = () => {
@@ -26,10 +27,16 @@ function App() {
     document.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('mouseup', handleMouseUp);
 
-    // Cleanup event listeners
+    // Show content after 1 second
+    const contentTimer = setTimeout(() => {
+      setIsContentVisible(true);
+    }, 1000);
+
+    // Cleanup event listeners and timer
     return () => {
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('mouseup', handleMouseUp);
+      clearTimeout(contentTimer);
     };
   }, []);
 
@@ -39,17 +46,21 @@ function App() {
       <FishBackground isEffectEnabled={isFishEffectEnabled} areFishHidden={areFishHidden} />
       <div className="relative z-10">
         <Navbar onBlogStateChange={setIsBlogActive} />
-        <Hero />
-        <ScrollingArrow />
-        <div className="pt-16">
-          <Technologies />
-          <Projects />
-        </div>
+        {isContentVisible && (
+          <div className="animate-fade-in-up">
+            <Hero />
+            <ScrollingArrow />
+            <div className="pt-16">
+              <Technologies />
+              <Projects />
+            </div>
+          </div>
+        )}
       </div>
       
       {/* Toggle buttons for effects - outside Background component, hidden in blog mode */}
       {!isBlogActive && (
-        <div className="fixed bottom-4 right-4 flex flex-col gap-2 z-50">
+        <div className="fixed bottom-4 right-4 flex flex-row gap-4 z-50">
           <button
             onClick={() => setIsMouseEffectEnabled(!isMouseEffectEnabled)}
             className="text-neutral-500 hover:text-white text-xs font-mono transition-colors duration-200"
