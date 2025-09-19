@@ -6,8 +6,18 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
   const creaturesRef = useRef([]);
   const foodRef = useRef([]);
   const mousePositionRef = useRef({ x: 0, y: 0, isActive: false });
+  const lastMouseMoveRef = useRef(0); // Start with 0 so timeout triggers immediately
+  const previousMousePosRef = useRef({ x: 0, y: 0 });
+  const hasMouseMovedRef = useRef(false); // Track if mouse has ever moved
   const lastFoodSpawnRef = useRef(Date.now());
   const areFishHiddenRef = useRef(areFishHidden);
+  
+  // Seeded random number generator for predictable results
+  const seedRef = useRef(11111); // Fixed seed for consistent results
+  const seededRandom = () => {
+    seedRef.current = (seedRef.current * 9301 + 49297) % 233280;
+    return seedRef.current / 233280;
+  };
   
   // Configuration
   const config = useMemo(() => ({
@@ -61,10 +71,10 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
   class Fish {
     constructor(canvas, species = 'herbivore') {
       this.position = {
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height
+        x: seededRandom() * canvas.width,
+        y: seededRandom() * canvas.height
       };
-      const angle = Math.random() * 2 * Math.PI;
+      const angle = seededRandom() * 2 * Math.PI;
       this.velocity = {
         x: Math.cos(angle),
         y: Math.sin(angle)
@@ -348,8 +358,8 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
               if (mousePos.isActive) {
                 // Respawn at mouse location with some random spread
                 const spreadRadius = 30;
-                const angle = Math.random() * 2 * Math.PI;
-                const spreadDistance = Math.random() * spreadRadius;
+                const angle = seededRandom() * 2 * Math.PI;
+                const spreadDistance = seededRandom() * spreadRadius;
                 other.position.x = mousePos.x + Math.cos(angle) * spreadDistance;
                 other.position.y = mousePos.y + Math.sin(angle) * spreadDistance;
                 
@@ -358,12 +368,12 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
                 other.position.y = Math.max(0, Math.min(canvas.height, other.position.y));
               } else {
                 // Respawn at random location
-                other.position.x = Math.random() * canvas.width;
-                other.position.y = Math.random() * canvas.height;
+                other.position.x = seededRandom() * canvas.width;
+                other.position.y = seededRandom() * canvas.height;
               }
               
-              other.velocity.x = Math.cos(Math.random() * 2 * Math.PI);
-              other.velocity.y = Math.sin(Math.random() * 2 * Math.PI);
+              other.velocity.x = Math.cos(seededRandom() * 2 * Math.PI);
+              other.velocity.y = Math.sin(seededRandom() * 2 * Math.PI);
               other.trail = [];
             }
           }
@@ -629,12 +639,12 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
   class Food {
     constructor(canvas, x = null, y = null) {
       this.position = {
-        x: x !== null ? x : Math.random() * canvas.width,
-        y: y !== null ? y : Math.random() * canvas.height
+        x: x !== null ? x : seededRandom() * canvas.width,
+        y: y !== null ? y : seededRandom() * canvas.height
       };
       this.size = 2;
-      this.glowPhase = Math.random() * Math.PI * 2; // Random starting phase for glow
-      this.glowSpeed = 0.001 + Math.random() * 0.02; // Much slower glow speeds
+      this.glowPhase = seededRandom() * Math.PI * 2; // Random starting phase for glow
+      this.glowSpeed = 0.001 + seededRandom() * 0.02; // Much slower glow speeds
     }
 
     draw(ctx) {
@@ -654,8 +664,8 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
   const spawnSingleFood = (canvas, foods) => {
     // Only spawn if under the limit
     if (foods.length < config.maxFoodCount) {
-      const x = Math.random() * canvas.width;
-      const y = Math.random() * canvas.height;
+      const x = seededRandom() * canvas.width;
+      const y = seededRandom() * canvas.height;
       foods.push(new Food(canvas, x, y));
     }
   };
@@ -687,6 +697,17 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
   const animate = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    // Check mouse activity timeout (3 seconds) - only if mouse has moved at least once
+    if (hasMouseMovedRef.current) {
+      const now = Date.now();
+      const timeSinceLastMove = now - lastMouseMoveRef.current;
+      const shouldBeActive = timeSinceLastMove < 3000; // 3 seconds
+      
+      if (shouldBeActive !== mousePositionRef.current.isActive) {
+        mousePositionRef.current.isActive = shouldBeActive;
+      }
+    }
 
     const ctx = canvas.getContext('2d');
     const creatures = creaturesRef.current;
@@ -734,12 +755,21 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
+      const newMousePos = { x: mouseX, y: mouseY };
+      const previousPos = previousMousePosRef.current;
       
-      mousePositionRef.current = {
-        x: mouseX,
-        y: mouseY,
-        isActive: true
-      };
+      // Only update timestamp if mouse actually moved (not just scrolling)
+      const mouseMoved = Math.abs(newMousePos.x - previousPos.x) > 0 || Math.abs(newMousePos.y - previousPos.y) > 0;
+      
+      if (mouseMoved) {
+        hasMouseMovedRef.current = true; // Mark that mouse has moved at least once
+        lastMouseMoveRef.current = Date.now();
+        previousMousePosRef.current = newMousePos;
+        mousePositionRef.current.isActive = true;
+      }
+      
+      mousePositionRef.current.x = mouseX;
+      mousePositionRef.current.y = mouseY;
     };
 
     const handleMouseLeave = () => {

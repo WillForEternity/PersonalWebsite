@@ -6,14 +6,40 @@ const Background = ({ isEffectEnabled = true }) => {
     x: typeof window !== 'undefined' ? window.innerWidth / 2 : 0, 
     y: typeof window !== 'undefined' ? window.innerHeight / 2 : 0 
   });
+  const [displayMousePos, setDisplayMousePos] = useState({ 
+    x: typeof window !== 'undefined' ? window.innerWidth / 2 : 0, 
+    y: typeof window !== 'undefined' ? window.innerHeight / 2 : 0 
+  });
   const [waveTime, setWaveTime] = useState(0);
   const [clickRipples, setClickRipples] = useState([]);
   const [isHoveringButton, setIsHoveringButton] = useState(false);
   const [hoverFadeAmount, setHoverFadeAmount] = useState(1); // 1 = full opacity, 0 = hidden
+  const [isMouseActive, setIsMouseActive] = useState(false); // Start inactive until user moves mouse
+  const [mouseTransitionAmount, setMouseTransitionAmount] = useState(0); // Start centered
+  const lastMouseMoveRef = useRef(0); // Start with 0 so timeout triggers immediately
+  const previousMousePosRef = useRef({ 
+    x: typeof window !== 'undefined' ? window.innerWidth / 2 : 0, 
+    y: typeof window !== 'undefined' ? window.innerHeight / 2 : 0 
+  });
+  const hasMouseMovedRef = useRef(false); // Track if mouse has ever moved
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
+      const newMousePos = { x: e.clientX, y: e.clientY };
+      const previousPos = previousMousePosRef.current;
+      
+      // Only update timestamp if mouse actually moved (not just scrolling)
+      const mouseMoved = Math.abs(newMousePos.x - previousPos.x) > 0 || Math.abs(newMousePos.y - previousPos.y) > 0;
+      
+      if (mouseMoved) {
+        hasMouseMovedRef.current = true; // Mark that mouse has moved at least once
+        lastMouseMoveRef.current = Date.now();
+        setIsMouseActive(true);
+        previousMousePosRef.current = newMousePos;
+      }
+      
+      // Always update the current mouse position for display purposes
+      setMousePos(newMousePos);
       
       // Check if hovering over interactive elements
       const target = e.target;
@@ -76,6 +102,65 @@ const Background = ({ isEffectEnabled = true }) => {
       }
     };
   }, [isHoveringButton]);
+
+  // Mouse activity timeout checker
+  useEffect(() => {
+    const checkMouseActivity = () => {
+      // Only check timeout if mouse has moved at least once
+      if (!hasMouseMovedRef.current) {
+        return;
+      }
+      
+      const now = Date.now();
+      const timeSinceLastMove = now - lastMouseMoveRef.current;
+      const shouldBeActive = timeSinceLastMove < 3000; // 3 seconds
+      
+      if (shouldBeActive !== isMouseActive) {
+        setIsMouseActive(shouldBeActive);
+      }
+    };
+
+    const interval = setInterval(checkMouseActivity, 100); // Check every 100ms
+    return () => clearInterval(interval);
+  }, [isMouseActive]);
+
+  // Smooth transition for mouse position (center vs actual mouse)
+  useEffect(() => {
+    let animationFrame;
+    const targetTransition = isMouseActive ? 1 : 0;
+    const transitionSpeed = 0.05; // Same speed as hover fade
+    
+    const animateTransition = () => {
+      setMouseTransitionAmount(current => {
+        const diff = targetTransition - current;
+        if (Math.abs(diff) < 0.01) {
+          return targetTransition; // Snap to target when very close
+        }
+        return current + (diff * transitionSpeed);
+      });
+      
+      animationFrame = requestAnimationFrame(animateTransition);
+    };
+    
+    animateTransition();
+    
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [isMouseActive]);
+
+  // Calculate display mouse position (interpolated between actual mouse and screen center)
+  useEffect(() => {
+    const centerX = typeof window !== 'undefined' ? window.innerWidth / 2 : 0;
+    const centerY = typeof window !== 'undefined' ? window.innerHeight / 2 : 0;
+    
+    const interpolatedX = mousePos.x * mouseTransitionAmount + centerX * (1 - mouseTransitionAmount);
+    const interpolatedY = mousePos.y * mouseTransitionAmount + centerY * (1 - mouseTransitionAmount);
+    
+    setDisplayMousePos({ x: interpolatedX, y: interpolatedY });
+  }, [mousePos.x, mousePos.y, mouseTransitionAmount]);
 
   useEffect(() => {
     const generateSmoothWave = (time) => {
@@ -146,10 +231,10 @@ const Background = ({ isEffectEnabled = true }) => {
         const finalX = baseX + primaryWaveX + secondaryWaveX + tertiaryWaveX;
         const finalY = baseY + primaryWaveY + secondaryWaveY + tertiaryWaveY;
         
-        // 📏 MOUSE PROXIMITY CALCULATION - Distance to wave-displaced position
+        // 📏 MOUSE PROXIMITY CALCULATION - Distance to wave-displaced position (using display position)
         const distance = Math.sqrt(
-          Math.pow(mousePos.x - (finalX + squareSize/2), 2) + 
-          Math.pow(mousePos.y - (finalY + squareSize/2), 2)
+          Math.pow(displayMousePos.x - (finalX + squareSize/2), 2) + 
+          Math.pow(displayMousePos.y - (finalY + squareSize/2), 2)
         );
         
         // 💡 DYNAMIC LIGHTING - Fast fade with dimmer outer rings
@@ -240,7 +325,7 @@ const Background = ({ isEffectEnabled = true }) => {
     }
     
     return squares;
-  }, [mousePos.x, mousePos.y, waveTime, clickRipples, hoverFadeAmount, isEffectEnabled]); // Memoize based on mouse position, wave time, ripples, fade amount, and effect toggle
+  }, [displayMousePos.x, displayMousePos.y, waveTime, clickRipples, hoverFadeAmount, isEffectEnabled]); // Memoize based on display mouse position, wave time, ripples, fade amount, and effect toggle
 
   return (
     <div className="fixed inset-0 w-full h-full overflow-hidden bg-gray-950 cursor-none touch-none" style={{ backgroundColor: '#070e1a' }}>
