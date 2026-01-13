@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 
 const WRITINGS = [
   {
@@ -86,83 +86,7 @@ const WritingCard = ({ writing, onClick, index }) => {
   );
 };
 
-const WritingModal = ({ writing, onClose }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.25 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8"
-      onClick={onClose}
-    >
-      {/* Backdrop */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="absolute inset-0 bg-gray-950/95 backdrop-blur-sm" 
-      />
-      
-      {/* Modal Container */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 15 }}
-        transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-        onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl max-h-[90vh] flex flex-col"
-      >
-        {/* Close button - floating outside the card */}
-        <button
-          onClick={onClose}
-          className="absolute -top-12 right-0 sm:right-0 w-8 h-8 flex items-center justify-center text-white/40 hover:text-white transition-colors duration-200"
-          aria-label="Close"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        
-        {/* Card */}
-        <div className="bg-[#0a0f18] border border-white/[0.08] rounded-2xl overflow-hidden flex flex-col max-h-[90vh]">
-          {/* Header */}
-          <div className="px-6 sm:px-8 pt-8 pb-6 border-b border-white/[0.05]">
-            {/* Meta line */}
-            <div className="flex items-center gap-3 mb-5">
-              <span className="text-xs text-cyan-400/80 font-mono">{writing.date}</span>
-              <span className="w-1 h-1 rounded-full bg-white/20" />
-              <span className="text-xs text-white/30">{writing.readTime}</span>
-            </div>
-            
-            {/* Title */}
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-light text-white leading-tight tracking-tight">
-              {writing.title}
-            </h1>
-          </div>
-          
-          {/* Scrollable Content */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar">
-            <div className="px-6 sm:px-8 py-6 sm:py-8">
-              {writing.content.split('\n\n').map((paragraph, idx) => (
-                <p key={idx} className="text-[15px] text-white/60 font-light leading-[1.8] mb-5 last:mb-0">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
-          </div>
-          
-          {/* Footer accent */}
-          <div className="h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-};
-
-const Writings = () => {
-  const [selectedWriting, setSelectedWriting] = useState(null);
-
+const Writings = ({ onArticleSelect }) => {
   return (
     <div className="h-screen overflow-y-auto custom-scrollbar">
       <div className="min-h-screen px-4 sm:px-8 py-24 sm:py-32">
@@ -187,22 +111,12 @@ const Writings = () => {
                 key={writing.id}
                 writing={writing}
                 index={index}
-                onClick={() => setSelectedWriting(writing)}
+                onClick={() => onArticleSelect(writing)}
               />
             ))}
           </div>
         </div>
       </div>
-      
-      {/* Modal */}
-      <AnimatePresence>
-        {selectedWriting && (
-          <WritingModal
-            writing={selectedWriting}
-            onClose={() => setSelectedWriting(null)}
-          />
-        )}
-      </AnimatePresence>
     </div>
   );
 };

@@ -75,41 +75,43 @@ const Menu = ({ currentView, onNavigate }) => {
       <div className="flex justify-between items-center">
         {/* Hamburger Menu */}
         <div ref={menuRef} className="relative">
-          <button
+          <motion.button
             onClick={() => setIsOpen(prev => !prev)}
-            className="group flex flex-col justify-center items-center w-14 h-14 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300"
+            className="group flex flex-col justify-center items-center w-12 h-12 rounded-full transition-all duration-300"
             aria-label="Menu"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
           >
             <motion.div
               className="flex flex-col justify-center items-center gap-1.5"
               animate={isOpen ? "open" : "closed"}
             >
               <motion.span
-                className="block w-6 h-0.5 bg-white/80 rounded-full origin-center"
+                className="block w-6 h-0.5 bg-white rounded-full origin-center"
                 variants={{
-                  closed: { rotate: 0, y: 0 },
-                  open: { rotate: 45, y: 8 }
+                  closed: { rotate: 0, y: 0, width: 24 },
+                  open: { rotate: 45, y: 8, width: 28 }
                 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.4, ease: [0.68, -0.6, 0.32, 1.6] }}
               />
               <motion.span
-                className="block w-6 h-0.5 bg-white/80 rounded-full"
+                className="block w-4 h-0.5 bg-white/70 rounded-full"
                 variants={{
-                  closed: { opacity: 1, scaleX: 1 },
-                  open: { opacity: 0, scaleX: 0 }
+                  closed: { opacity: 1, scaleX: 1, x: 0 },
+                  open: { opacity: 0, scaleX: 0, x: 20 }
                 }}
-                transition={{ duration: 0.2 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
               />
               <motion.span
-                className="block w-6 h-0.5 bg-white/80 rounded-full origin-center"
+                className="block w-6 h-0.5 bg-white rounded-full origin-center"
                 variants={{
-                  closed: { rotate: 0, y: 0 },
-                  open: { rotate: -45, y: -8 }
+                  closed: { rotate: 0, y: 0, width: 24 },
+                  open: { rotate: -45, y: -8, width: 28 }
                 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.4, ease: [0.68, -0.6, 0.32, 1.6] }}
               />
             </motion.div>
-          </button>
+          </motion.button>
 
           {/* Dropdown Menu */}
           <AnimatePresence>

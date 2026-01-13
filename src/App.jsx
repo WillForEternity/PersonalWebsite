@@ -5,9 +5,11 @@ import FishBackground from './components/FishBackground';
 import Hero from './components/Hero';
 import Projects from './components/Projects';
 import Writings from './components/Writings';
+import ArticleView from './components/ArticleView';
 
 function App() {
   const [currentView, setCurrentView] = useState('home');
+  const [selectedArticle, setSelectedArticle] = useState(null); // For article view
   const [isMouseEffectEnabled, setIsMouseEffectEnabled] = useState(true);
   const [isFishEffectEnabled, setIsFishEffectEnabled] = useState(true);
   const [areFishHidden, setAreFishHidden] = useState(true);
@@ -36,10 +38,41 @@ function App() {
     };
   }, []);
 
+  // Handle navigation to article
+  const handleArticleSelect = (article) => {
+    setSelectedArticle(article);
+  };
+
+  // Handle back from article
+  const handleBackFromArticle = () => {
+    setSelectedArticle(null);
+  };
+
+  // Handle main navigation (resets article view)
+  const handleNavigate = (view) => {
+    setCurrentView(view);
+    setSelectedArticle(null);
+    
+    // Turn off mouse effect when entering writings section
+    if (view === 'writings') {
+      setIsMouseEffectEnabled(false);
+    } else {
+      setIsMouseEffectEnabled(true);
+    }
+  };
+
+  // Check if we're in writings mode (writings list or article view)
+  const isInWritingsMode = currentView === 'writings' || selectedArticle !== null;
+
   const renderView = () => {
+    // If an article is selected, show the article view
+    if (selectedArticle) {
+      return <ArticleView article={selectedArticle} onBack={handleBackFromArticle} />;
+    }
+
     switch (currentView) {
       case 'writings':
-        return <Writings />;
+        return <Writings onArticleSelect={handleArticleSelect} />;
       case 'projects':
         return <Projects />;
       case 'home':
@@ -50,12 +83,15 @@ function App() {
 
   return (
     <div className="relative min-h-screen text-neutral-300 antialiased selection:bg-cyan-300 selection:text-cyan-900">
-      <Background isEffectEnabled={isMouseEffectEnabled} />
+      {/* Hide wavy grid background in writings mode */}
+      {!isInWritingsMode && <Background isEffectEnabled={isMouseEffectEnabled} />}
+      {/* Show a simple dark background when in writings mode (no grid) */}
+      {isInWritingsMode && <div className="fixed inset-0 bg-[#070e1a]" style={{ zIndex: 0 }} />}
       <FishBackground isEffectEnabled={isFishEffectEnabled} areFishHidden={areFishHidden} />
       
       {/* Main content layer */}
       <div className="relative z-10">
-        <Menu currentView={currentView} onNavigate={setCurrentView} />
+        <Menu currentView={currentView} onNavigate={handleNavigate} />
         {isContentVisible && (
           <div className="animate-fade-in-up">
             {renderView()}
