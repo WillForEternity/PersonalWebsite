@@ -13,7 +13,7 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
   const areFishHiddenRef = useRef(areFishHidden);
   
   // Seeded random number generator for predictable results
-  const seedRef = useRef(11111); // Fixed seed for consistent results
+  const seedRef = useRef(22222); // Fixed seed for consistent results (changed seed)
   const seededRandom = () => {
     seedRef.current = (seedRef.current * 9301 + 49297) % 233280;
     return seedRef.current / 233280;

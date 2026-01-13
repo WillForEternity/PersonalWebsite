@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
+import Menu from './components/Menu';
 import Background from './components/Background';
 import FishBackground from './components/FishBackground';
 import Hero from './components/Hero';
-import Technologies from './components/Technologies';
-import ScrollingArrow from './components/ScrollingArrow';
 import Projects from './components/Projects';
+import Writings from './components/Writings';
 
 function App() {
-  const [isBlogActive, setIsBlogActive] = useState(false);
+  const [currentView, setCurrentView] = useState('home');
   const [isMouseEffectEnabled, setIsMouseEffectEnabled] = useState(true);
   const [isFishEffectEnabled, setIsFishEffectEnabled] = useState(true);
   const [areFishHidden, setAreFishHidden] = useState(true);
@@ -23,16 +22,13 @@ function App() {
       document.body.classList.remove('clicking');
     };
 
-    // Add global mouse event listeners
     document.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('mouseup', handleMouseUp);
 
-    // Show content after 1 second
     const contentTimer = setTimeout(() => {
       setIsContentVisible(true);
-    }, 1000);
+    }, 500);
 
-    // Cleanup event listeners and timer
     return () => {
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('mouseup', handleMouseUp);
@@ -40,47 +36,48 @@ function App() {
     };
   }, []);
 
+  const renderView = () => {
+    switch (currentView) {
+      case 'writings':
+        return <Writings />;
+      case 'projects':
+        return <Projects />;
+      case 'home':
+      default:
+        return <Hero />;
+    }
+  };
+
   return (
-    <div className={`flex flex-col min-h-screen overflow-x-hidden text-neutral-300 antialiased selection:bg-cyan-300 selection:text-cyan-900 ${isBlogActive ? 'blog-active' : ''}`}>
+    <div className="relative min-h-screen text-neutral-300 antialiased selection:bg-cyan-300 selection:text-cyan-900">
       <Background isEffectEnabled={isMouseEffectEnabled} />
       <FishBackground isEffectEnabled={isFishEffectEnabled} areFishHidden={areFishHidden} />
+      
+      {/* Main content layer */}
       <div className="relative z-10">
-        <Navbar onBlogStateChange={setIsBlogActive} />
+        <Menu currentView={currentView} onNavigate={setCurrentView} />
         {isContentVisible && (
           <div className="animate-fade-in-up">
-            <Hero />
-            <ScrollingArrow />
-            <div className="pt-16">
-              <Technologies />
-              <Projects />
-            </div>
+            {renderView()}
           </div>
         )}
       </div>
       
-      {/* Toggle buttons for effects - outside Background component, hidden in blog mode */}
-      {!isBlogActive && (
-        <div className="fixed bottom-4 right-4 flex flex-row gap-4 z-50">
-          <button
-            onClick={() => setIsMouseEffectEnabled(!isMouseEffectEnabled)}
-            className="text-neutral-500 hover:text-white text-xs font-mono transition-colors duration-200"
-          >
-            [toggle mouse effect]
-          </button>
-          {/* <button
-            onClick={() => setIsFishEffectEnabled(!isFishEffectEnabled)}
-            className="text-neutral-500 hover:text-white text-xs font-mono transition-colors duration-200"
-          >
-            [toggle fish effect]
-          </button> */}
-          <button
-            onClick={() => setAreFishHidden(!areFishHidden)}
-            className="text-neutral-500 hover:text-white text-xs font-mono transition-colors duration-200"
-          >
-            [{areFishHidden ? 'show fish' : 'hide fish'}]
-          </button>
-        </div>
-      )}
+      {/* Toggle buttons for effects */}
+      <div className="fixed bottom-4 right-4 flex flex-row gap-4 z-50">
+        <button
+          onClick={() => setIsMouseEffectEnabled(!isMouseEffectEnabled)}
+          className="text-neutral-500 hover:text-white text-xs font-mono transition-colors duration-200"
+        >
+          [toggle mouse effect]
+        </button>
+        <button
+          onClick={() => setAreFishHidden(!areFishHidden)}
+          className="text-neutral-500 hover:text-white text-xs font-mono transition-colors duration-200"
+        >
+          [{areFishHidden ? 'show fish' : 'hide fish'}]
+        </button>
+      </div>
     </div>
   );
 }

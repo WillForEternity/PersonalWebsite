@@ -1,52 +1,74 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 
 const Background = ({ isEffectEnabled = true }) => {
   const svgRef = useRef(null);
-  const [mousePos, setMousePos] = useState({ 
-    x: typeof window !== 'undefined' ? window.innerWidth / 2 : 0, 
-    y: typeof window !== 'undefined' ? window.innerHeight / 2 : 0 
-  });
-  const [displayMousePos, setDisplayMousePos] = useState({ 
-    x: typeof window !== 'undefined' ? window.innerWidth / 2 : 0, 
-    y: typeof window !== 'undefined' ? window.innerHeight / 2 : 0 
-  });
+  // Use separate x/y state to avoid Safari's object comparison issues with useMemo
+  const [mousePosX, setMousePosX] = useState(typeof window !== 'undefined' ? window.innerWidth / 2 : 0);
+  const [mousePosY, setMousePosY] = useState(typeof window !== 'undefined' ? window.innerHeight / 2 : 0);
   const [waveTime, setWaveTime] = useState(0);
   const [clickRipples, setClickRipples] = useState([]);
   const [isHoveringButton, setIsHoveringButton] = useState(false);
   const [hoverFadeAmount, setHoverFadeAmount] = useState(1); // 1 = full opacity, 0 = hidden
   const [isMouseActive, setIsMouseActive] = useState(false); // Start inactive until user moves mouse
   const [mouseTransitionAmount, setMouseTransitionAmount] = useState(0); // Start centered
+  const [renderTime, setRenderTime] = useState(Date.now()); // Synced time for ripple calculations
   const lastMouseMoveRef = useRef(0); // Start with 0 so timeout triggers immediately
+  const pendingMouseFrameRef = useRef(null);
+  const latestMousePosRef = useRef({ x: mousePosX, y: mousePosY });
+  const hoverFadeRef = useRef(hoverFadeAmount);
+  const mouseTransitionRef = useRef(mouseTransitionAmount);
+  const hoverFadeRafRef = useRef(null);
+  const mouseTransitionRafRef = useRef(null);
   const previousMousePosRef = useRef({ 
     x: typeof window !== 'undefined' ? window.innerWidth / 2 : 0, 
     y: typeof window !== 'undefined' ? window.innerHeight / 2 : 0 
   });
   const hasMouseMovedRef = useRef(false); // Track if mouse has ever moved
+  const lastWaveFrameTimeRef = useRef(performance.now()); // For time-based animation
+
+  // Keep refs in sync with state (so rAF loops can read the latest values without closing over stale state)
+  useEffect(() => {
+    hoverFadeRef.current = hoverFadeAmount;
+  }, [hoverFadeAmount]);
+
+  useEffect(() => {
+    mouseTransitionRef.current = mouseTransitionAmount;
+  }, [mouseTransitionAmount]);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      const newMousePos = { x: e.clientX, y: e.clientY };
+      const newX = e.clientX;
+      const newY = e.clientY;
       const previousPos = previousMousePosRef.current;
       
       // Only update timestamp if mouse actually moved (not just scrolling)
-      const mouseMoved = Math.abs(newMousePos.x - previousPos.x) > 0 || Math.abs(newMousePos.y - previousPos.y) > 0;
+      const mouseMoved = Math.abs(newX - previousPos.x) > 0 || Math.abs(newY - previousPos.y) > 0;
       
       if (mouseMoved) {
         hasMouseMovedRef.current = true; // Mark that mouse has moved at least once
         lastMouseMoveRef.current = Date.now();
         setIsMouseActive(true);
-        previousMousePosRef.current = newMousePos;
+        previousMousePosRef.current = { x: newX, y: newY };
       }
       
-      // Always update the current mouse position for display purposes
-      setMousePos(newMousePos);
+      // Throttle mouse state updates to rAF to avoid flooding React renders
+      latestMousePosRef.current = { x: newX, y: newY };
+      if (!pendingMouseFrameRef.current) {
+        pendingMouseFrameRef.current = requestAnimationFrame(() => {
+          pendingMouseFrameRef.current = null;
+          const pos = latestMousePosRef.current;
+          // Update x and y separately to ensure Safari detects changes
+          setMousePosX(pos.x);
+          setMousePosY(pos.y);
+        });
+      }
       
       // Check if hovering over interactive elements
       const target = e.target;
       const isInteractive = target.matches('button, a[href], [onclick], [role="button"], .cursor-pointer, input:not([type="hidden"]), select, textarea') ||
                            target.closest('button, a[href], [onclick], [role="button"], .cursor-pointer, input:not([type="hidden"]), select, textarea');
       
-      setIsHoveringButton(isInteractive);
+      setIsHoveringButton((prev) => (prev === isInteractive ? prev : isInteractive));
     };
 
     const handleMouseClick = (e) => {
@@ -73,32 +95,46 @@ const Background = ({ isEffectEnabled = true }) => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseClick);
+      if (pendingMouseFrameRef.current) {
+        cancelAnimationFrame(pendingMouseFrameRef.current);
+        pendingMouseFrameRef.current = null;
+      }
     };
   }, []);
 
   // Smooth transition for hover fade effect
   useEffect(() => {
-    let animationFrame;
     const targetFade = isHoveringButton ? 0 : 1;
     const fadeSpeed = 0.05; // Adjust speed of fade transition
-    
-    const animateFade = () => {
-      setHoverFadeAmount(current => {
-        const diff = targetFade - current;
-        if (Math.abs(diff) < 0.01) {
-          return targetFade; // Snap to target when very close
-        }
-        return current + (diff * fadeSpeed);
-      });
-      
-      animationFrame = requestAnimationFrame(animateFade);
+
+    if (hoverFadeRafRef.current) {
+      cancelAnimationFrame(hoverFadeRafRef.current);
+      hoverFadeRafRef.current = null;
+    }
+
+    const step = () => {
+      const current = hoverFadeRef.current;
+      const diff = targetFade - current;
+
+      if (Math.abs(diff) < 0.01) {
+        hoverFadeRef.current = targetFade;
+        setHoverFadeAmount(targetFade);
+        hoverFadeRafRef.current = null;
+        return;
+      }
+
+      const next = current + diff * fadeSpeed;
+      hoverFadeRef.current = next;
+      setHoverFadeAmount(next);
+      hoverFadeRafRef.current = requestAnimationFrame(step);
     };
-    
-    animateFade();
-    
+
+    hoverFadeRafRef.current = requestAnimationFrame(step);
+
     return () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
+      if (hoverFadeRafRef.current) {
+        cancelAnimationFrame(hoverFadeRafRef.current);
+        hoverFadeRafRef.current = null;
       }
     };
   }, [isHoveringButton]);
@@ -126,41 +162,52 @@ const Background = ({ isEffectEnabled = true }) => {
 
   // Smooth transition for mouse position (center vs actual mouse)
   useEffect(() => {
-    let animationFrame;
     const targetTransition = isMouseActive ? 1 : 0;
     const transitionSpeed = 0.05; // Same speed as hover fade
-    
-    const animateTransition = () => {
-      setMouseTransitionAmount(current => {
-        const diff = targetTransition - current;
-        if (Math.abs(diff) < 0.01) {
-          return targetTransition; // Snap to target when very close
-        }
-        return current + (diff * transitionSpeed);
-      });
-      
-      animationFrame = requestAnimationFrame(animateTransition);
+
+    if (mouseTransitionRafRef.current) {
+      cancelAnimationFrame(mouseTransitionRafRef.current);
+      mouseTransitionRafRef.current = null;
+    }
+
+    const step = () => {
+      const current = mouseTransitionRef.current;
+      const diff = targetTransition - current;
+
+      if (Math.abs(diff) < 0.01) {
+        mouseTransitionRef.current = targetTransition;
+        setMouseTransitionAmount(targetTransition);
+        mouseTransitionRafRef.current = null;
+        return;
+      }
+
+      const next = current + diff * transitionSpeed;
+      mouseTransitionRef.current = next;
+      setMouseTransitionAmount(next);
+      mouseTransitionRafRef.current = requestAnimationFrame(step);
     };
-    
-    animateTransition();
-    
+
+    mouseTransitionRafRef.current = requestAnimationFrame(step);
+
     return () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
+      if (mouseTransitionRafRef.current) {
+        cancelAnimationFrame(mouseTransitionRafRef.current);
+        mouseTransitionRafRef.current = null;
       }
     };
   }, [isMouseActive]);
 
-  // Calculate display mouse position (interpolated between actual mouse and screen center)
-  useEffect(() => {
+  // Interpolated between actual mouse and screen center (avoid extra state/renders)
+  // Use primitive dependencies (not objects) to ensure Safari correctly detects changes
+  const displayMousePosX = useMemo(() => {
     const centerX = typeof window !== 'undefined' ? window.innerWidth / 2 : 0;
+    return mousePosX * mouseTransitionAmount + centerX * (1 - mouseTransitionAmount);
+  }, [mousePosX, mouseTransitionAmount]);
+
+  const displayMousePosY = useMemo(() => {
     const centerY = typeof window !== 'undefined' ? window.innerHeight / 2 : 0;
-    
-    const interpolatedX = mousePos.x * mouseTransitionAmount + centerX * (1 - mouseTransitionAmount);
-    const interpolatedY = mousePos.y * mouseTransitionAmount + centerY * (1 - mouseTransitionAmount);
-    
-    setDisplayMousePos({ x: interpolatedX, y: interpolatedY });
-  }, [mousePos.x, mousePos.y, mouseTransitionAmount]);
+    return mousePosY * mouseTransitionAmount + centerY * (1 - mouseTransitionAmount);
+  }, [mousePosY, mouseTransitionAmount]);
 
   useEffect(() => {
     const generateSmoothWave = (time) => {
@@ -175,40 +222,66 @@ const Background = ({ isEffectEnabled = true }) => {
       return points.join(' L ');
     };
 
-    let time = 0;
-    const animateWaves = () => {
+    let rafId;
+    const animateWaves = (now) => {
       const svg = svgRef.current;
-      if (!svg) return;
+      if (!svg) {
+        rafId = requestAnimationFrame(animateWaves);
+        return;
+      }
 
-      time += 0.11;
-      setWaveTime(time);
+      // Time-based animation: advance by elapsed time (in seconds) * speed factor
+      // This ensures consistent animation speed regardless of frame rate (Safari vs Chrome)
+      const elapsed = now - lastWaveFrameTimeRef.current;
+      lastWaveFrameTimeRef.current = now;
+      
+      // ~0.11 per 16.67ms (60fps) = 6.6 per second; so speed = 6.6
+      const speed = 6.6;
+      const deltaTime = elapsed / 1000; // Convert to seconds
+      
+      setWaveTime((prev) => prev + deltaTime * speed);
+      setRenderTime(Date.now()); // Sync render time for ripple calculations
 
       const paths = svg.querySelectorAll('path');
+      // Use the ref's current waveTime for immediate DOM updates
+      const currentTime = waveTime + deltaTime * speed;
       paths.forEach((path) => {
-        const newPath = `M ${generateSmoothWave(time)}`;
+        const newPath = `M ${generateSmoothWave(currentTime)}`;
         path.setAttribute('d', newPath);
       });
 
-      requestAnimationFrame(animateWaves);
+      rafId = requestAnimationFrame(animateWaves);
     };
 
-    animateWaves();
-  }, []);
+    rafId = requestAnimationFrame(animateWaves);
+    
+    return () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
+  }, [waveTime]);
 
   // Generate wave-following grid squares with proximity-based lighting using cool math
   const waveFollowingSquares = useMemo(() => {
     const squares = [];
     const squareSize = 32; // Smaller squares
     const gridSpacing = 32; // Tighter grid spacing
-    
-    // Calculate how many squares fit on screen - with mobile safety
-    const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1200;
-    const screenHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
-    const cols = Math.ceil(screenWidth / squareSize) + 4;
-    const rows = Math.ceil(screenHeight / squareSize) + 4;
-    
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
+
+    // Performance: only iterate squares near the cursor (others are always opacity ~0 anyway).
+    // This is especially important on Safari, which tends to repaint large SVG trees more slowly.
+    const maxEffectRadius = 175;
+    const range = Math.ceil((maxEffectRadius + squareSize) / gridSpacing) + 3; // generous padding
+    const centerCol = Math.floor(displayMousePosX / gridSpacing);
+    const centerRow = Math.floor(displayMousePosY / gridSpacing);
+
+    const minCol = centerCol - range;
+    const maxCol = centerCol + range;
+    const minRow = centerRow - range;
+    const maxRow = centerRow + range;
+
+    for (let row = minRow; row <= maxRow; row++) {
+      for (let col = minCol; col <= maxCol; col++) {
         // Base position aligned with wave grid
         const baseX = col * gridSpacing;
         const baseY = row * gridSpacing;
@@ -233,8 +306,8 @@ const Background = ({ isEffectEnabled = true }) => {
         
         // 📏 MOUSE PROXIMITY CALCULATION - Distance to wave-displaced position (using display position)
         const distance = Math.sqrt(
-          Math.pow(displayMousePos.x - (finalX + squareSize/2), 2) + 
-          Math.pow(displayMousePos.y - (finalY + squareSize/2), 2)
+          Math.pow(displayMousePosX - (finalX + squareSize/2), 2) + 
+          Math.pow(displayMousePosY - (finalY + squareSize/2), 2)
         );
         
         // 💡 DYNAMIC LIGHTING - Fast fade with dimmer outer rings
@@ -260,15 +333,14 @@ const Background = ({ isEffectEnabled = true }) => {
         opacity *= (0.7 + waveIntensity * 0.3); // 70-100% based on wave intensity
         
         // 🌊 CLICK RIPPLE EFFECT
-        // Add pulsing effect from click ripples
+        // Add pulsing effect from click ripples (use synced renderTime, not Date.now())
         let rippleBoost = 0;
-        const currentTime = Date.now();
         
         for (const ripple of clickRipples) {
-          const elapsed = currentTime - ripple.startTime;
+          const elapsed = renderTime - ripple.startTime;
           const progress = elapsed / ripple.duration; // 0 to 1
           
-          if (progress <= 1) {
+          if (progress <= 1 && progress >= 0) {
             // Calculate distance from square to ripple center
             const rippleDistance = Math.sqrt(
               Math.pow(finalX + squareSize/2 - ripple.x, 2) + 
@@ -304,20 +376,21 @@ const Background = ({ isEffectEnabled = true }) => {
         }
         
         if (opacity > 0.01) {
+          // Keep scaled squares centered (Safari can look "fragmented" when sizes change but anchors don't).
+          const scaledSize = squareSize * scale;
+          const offset = (scaledSize - squareSize) / 2;
+
           squares.push(
             <rect
               key={`${row}-${col}`}
-              x={finalX}
-              y={finalY}
-              width={squareSize * scale}
-              height={squareSize * scale}
+              x={finalX - offset}
+              y={finalY - offset}
+              width={scaledSize}
+              height={scaledSize}
               fill="rgba(255,255,255,1)"
               opacity={opacity}
               rx={2} // Subtle rounded corners
-              style={{
-                transition: 'opacity 0.15s ease-out',
-                transformOrigin: 'center'
-              }}
+              // Remove CSS transition - Safari's SVG transition can cause opacity "ghosting"
             />
           );
         }
@@ -325,7 +398,7 @@ const Background = ({ isEffectEnabled = true }) => {
     }
     
     return squares;
-  }, [displayMousePos.x, displayMousePos.y, waveTime, clickRipples, hoverFadeAmount, isEffectEnabled]); // Memoize based on display mouse position, wave time, ripples, fade amount, and effect toggle
+  }, [displayMousePosX, displayMousePosY, waveTime, clickRipples, renderTime, hoverFadeAmount, isEffectEnabled]); // Memoize based on primitives for Safari compatibility
 
   return (
     <div className="fixed inset-0 w-full h-full overflow-hidden bg-gray-950 cursor-none touch-none" style={{ backgroundColor: '#070e1a' }}>

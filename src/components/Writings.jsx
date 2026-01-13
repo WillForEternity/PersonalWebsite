@@ -1,0 +1,210 @@
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const WRITINGS = [
+  {
+    id: 1,
+    title: "Emergence: Particle, the Transistor, and the Neuron",
+    excerpt: "I have begun to become interested in the property of emergence with respect to our universe and technologies that we have created...",
+    content: "I have begun to become interested in the property of `emergence` with respect to our universe and technologies that we have created. It seems that some of the most complex and useful mechanisms seem to arise from the interaction between a large number of simple, yet effective components.\n\nFirst, let's take the matter which makes up our universe. There are only 17 known particles that physicists believe make up everything else, and they interact with each other based on just four forces (i.e. strong, weak, electromagnetic, and gravitational). Despite this being somewhat a simple system, extremely intricate and almost spiritually complex phenomena seem to emerge from this. At a higher level, things like electric charge, the states of matter (i.e. gas, liquid, solid, plasma), chemistry, life, consciousness, and love have materialized. The particles themselves may also be emergent phenomena, possibly arising from something like vibrations or something else that play at an even lower level than these subatomic particles.\n\nNext, let's take the Integrated Circuit (IC). The main components of an IC are the transistor, along with resistors, capacitors, etc. But just from the arrangement of simple solid-state switches into logic gates, logic gates into simple circuits, simple circuits into more complicated operations, and so on and so forth, the abilities of ICs and now microcontrollers like CPUs and GPUs have become nearly magical. Moore's law, in the terms that it is sometimes referenced today, describes a drastic improvement in performance, cost, and size of chips about every two years. This is due to simply scaling the number of transistors/components per chip through a variety of methods, such as decreasing the size of transistors (which are now the size of several atoms), refining the production process for higher accuracy and precision, and becoming more intelligent with chip design and architecture. But the general concept is that we just use transistors and scale up, and we see amazing things happen.\n\nMaybe there is something deeper regarding the binary/boolean way of thinking. Duality is everywhere. Yin and yang, positive and negative, above and below, light and dark, life and death. This may seem trivial or obvious, but it's my belief that this has something to do directly with the structure of our universe. Existence and nonexistence are only possible within the entropic and impermanent way that our environment is fashioned.\n\nFinally, I'd like to discuss the brain, consciousness, and artificial neural networks in the context of deep learning. Neurons are cells that perform very complex processes, yet their actual overarching behavior is relatively simple. The complexity comes from how difficult it is to do this simple behavior using mushy, unconscious biology. To know what I mean by this (if you don't already), look into the process of a neuron fire, down to the level of the kinesin protein walking down the microtubules carrying vesicles of neurotransmitters. It's an amazing, yet hilariously inefficient process. We use a simple mathematical function to approximate a neuron's overarching behavior. We stack up many neurons within a deep artificial neural network, and amazing things happen.\n\nSo far, simply scaling up has worked wonders. Scaling up compute, data, the number of neurons, and finding more efficient training/learning algorithms has been everything that has contributed to the success of deep learning in the past two decades. I believe that this will continue in a similar sense that Moore's law predicted. By scaling up, I believe that by using the simple yet incredibly versatile neuron, and using a lot of them, will provide the grounds for higher level phenomena to emerge. Obviously there are issues here in terms of energy consumption, cost of GPUs (or whatever computer you use), and training data, but I believe that we will find ways to cleverly work around this as us humans usually do, and we will continue to use the simple neuron to build incredible things.",
+    date: "2024",
+    readTime: "8 min read"
+  },
+  {
+    id: 2,
+    title: "Regarding the United States Prison System",
+    excerpt: "Mental illness, poverty, and substance abuse are three phenomena that are extremely interconnected...",
+    content: "Before I begin I'd like to note that mental illness, poverty, and substance abuse are three phenomena that are extremely interconnected and result in huge lesions in the membranes of our communities throughout America. When people who suffer from these circumstances are unable to support themselves in society, they may notice that the prison system is the only facility for them to lean upon, and in turn, a prison such as Cook County Jail located in Chicago can become what is `Thought to be the largest mental healthcare provider in America right now.` Tom Dart, the County Deputy Sheriff, discussed the state of the prisons in the area. `With these national crime trends all going down around the country and the same here, we've been able to close down a couple of our divisions… the only place we've ever been overcrowded in the last 7 years is our acute mentally ill floor, and that's overcrowded almost every single day.`\n\nWhat's going on here?\n\nTo begin tackling this question, let's set things straight first. The system has been given (at least) two extremely fundamental and basic reasons as to why more institutions should be built to support victims of mental health disorders that end up in prison.\n\nThe first is the capital that is lost in accommodating these folks. It costs a huge sum to detain the average prisoner, but the Sheriff mentioned that those who are detained with mental illnesses can cost 3 times as much, since we're giving humans a price tag. That's about 15 times as much as it would cost to introduce them to outside (non privatized) rehabilitation centers, and of course the resources saved here could be reallocated for the betterment of the rest of society (which surely isn't also fucked and corrupt.)\n\nThe second is moral compass, along with compassion for others and empathy for their situations and differences. Sheriff Dart introduced a perspective that I personally empathize with: `I can't think to myself that a thoughtful society would agree that this is how we should treat people.`\n\nWe can do better. We need to do better… So why aren't we?\n\nSince a decent community would never openly sacrifice these benefits for something like, idk, increasing the prison system's own wealth through privatization, a notion which so starkly contrasts the concepts of justice and efficacy that it should never even be thought of… the answer to these questions must be complacency, or perhaps incompetence. There is no reason to allow this completely inadequate system to maintain its position of defunding mental health institutions and funding prisons, but people are too complacent, and complacency seems to breed inadequacy. In this case, the system, of which we all are a part of, is completely inadequate in its ability to effectively handle mental illness, poverty, and substance abuse, all of which has been illustrated through the lens of just one of these issues. So much money is being wasted, and lives are being sent down the drain. So I deem complacency a form of incompetence in this case. But this leads to more questions. Are we electing the wrong leaders? Are we not checking the fine print of who they are? Are the best leaders still inadequate for some reason or another? We also have to ask ourselves `Are certain criminal punishments given solely to target certain groups of people?` Note: crack cocaine and powdered cocaine have extremely similar effects on the brain, yet the punishment for and cultural view on usage of these two substances represent two nearly polar opposites.\n\nThe people in leadership positions that could influence this crisis are not trying to cause such an awful situation, I'm sure. But even if they also just happen to not brush their teeth at nightfall as opposed to doing it on purpose, their breath will still stink the same come sunrise. One does not sign up and is not elected to become a human being, a creature that must maintain oral hygiene, but they certainly do for positions of leadership within society. And the systemic cavities they leave in their incompetence to be effective leaders will hurt communities more than they may realize. The blame also lies on the rest of society. Why are we so comfortable with ignoring such blatant issues that so heavily affect the lives of our communal brothers and sisters? The causes of this trinity of sadness (poverty, mental illness, and substance abuse) are also likely influenced by various forms of a trinity of shit (complacency, incompetence, and inadequacy) throughout the rest of society. We should continually look for these holes in `thoughtful society` and press our leadership to fix them, and those of us who are really good at finding and fixing these holes should seek leadership positions for themselves. I don't know, those interested in politics I guess. We should all check to see if our breath stinks.\n\nMental illness can cause poverty and substance abuse, poverty can cause mental illness and substance abuse, and substance abuse can cause poverty and mental illness. People that begin with either or all of these factors can find themselves at their mercy. When they likely end up in the prison system as a result, they find themselves stuck in a circular river that carries them in and out of the prison doors over and over again. Even the wealthy sometimes don't seek therapy or rehab because of the price tag. What about someone who has just been thrown back into society after 20 years in prison with nothing to their name and no way to grow? And think about all that goes into this! Not just capital, but stigma from people and employers, the inadequacy of the prison's own mental health care and rehabilitation facilities, the catastrophic effects that everything we have discussed here can have on a person, etc.\n\nThe answer for all of this is effective rehabilitation and support on all fronts! It is clear as day! And yes, the people themselves need to seek growth, but for now the people that do seek this growth cannot achieve it.\n\nA group of prisoners, all men, that are preparing for their return to society are shown at group therapy. During what I call a `hymn` that they all chant together at the end of each therapy session, a line in this mantra that stood out to me. `We are a community of men aspiring for a new way of life.` To me, the strategy that these therapists working within the setting of a prison seem to be using revolves around building pillars of support. And when there is not a single support system for them anywhere else, they have to start in the room, building a community so that these men can lean on each other. I think it's a good start. What do I do about all this, shit I don't even know but I'm gonna think about it.",
+    date: "2024",
+    readTime: "7 min read"
+  },
+  {
+    id: 3,
+    title: "Matrix Multiplication is a Direct Conceptual Buildup from Scalar Multiplication.",
+    excerpt: "The columns and rows of a matrix can both be seen as vectors...",
+    content: "The columns and rows of a matrix can both be seen as vectors. First, it's good to lay out the results of different vector/matrix products to see what kind of objects we will end up with. I say products because these are all `multiplications`, roughly speaking.\n\nTo start, I'll describe the base case which is multiplication between two vectors. This doesn't exactly exist in the same way that you can multiply two real numbers. We instead use an operation called the dot product. This operation is very useful and interesting and has some complexities I will briefly discuss. It is the multiplication of a vector's length by the length of another vector's length in the direction of the first vector. If we have two vectors, how much does one go in the direction of the other?\n\nLet's say you're trying to shoot an arrow at a far away target. Let's say that wind is blowing in a single direction, at a certain constant strength, indicated by a vector. The dot product of a wind vector with your arrow's vector (magnitude and direction) would tell you how much the wind is helping, hindering, or blowing your arrow off-course at each point (the integral would tell you the total effect of the wind on your arrow bounded by the path the arrow took from your bow to the target).\n\nFor this `contribution` effect, we use the concept of projection. We treat one of the vectors as a new axis and ask, how much does the other vector lay along this axis? What makes this make sense is that the dot product of j and k, an example of two perpendicular (orthogonal) vectors, is 0. In fact, the dot product between any two orthogonal vectors is 0 because neither goes in the direction of the other at all. This is what it looks like geometrically.\n\nWhen we multiply these two lengths by each other, what we get out of this operation is a single scalar value. But when we compute dot products between two vectors, rather than using this geometric (physics) definition, we just multiply each component of the vectors by each other and sum each of these multiplications. One key, key thing to note here is that both of the vectors must have the same dimensionality, or else we can't go component-by-component, multiplying each pair. This addition of multiplications indeed outputs a single scalar value that is the output of our dot product operation.\n\nNext, comes the multiplication of a matrix and a vector. What we get out of this is a new vector. The matrix represents a transformation of space where we change its basis, and therefore all new linear combinations with this new basis will look different than they did before. The same vectors will look different. The matrix tells us where the basis vectors go. These basis vectors are called i, j, and k. Let's put those in a vector. The vector that multiplies them is a combination of scalar multiples of the original i, j, and k. So now we represent this vector as the same linear combination but of new basis vectors.\n\nWe can represent this as the dot product of <i, j, k> and <x, y, z>. However, our three-dimensional basis vectors each have three components, and therefore we represent them using a 3x3 matrix. The multiplication of this matrix with <x, y, z> will give you the new vector that <x, y, z> turns into once it is transformed. However, we can also think of this as the dot product of each row by the column vector, which, as we saw earlier, produces a scalar that serves as the new component of each row of the new vector. The first row of the matrix dotted with the column vector produces the first component of our new matrix, all the way down to our last row dotted with the vector to give us the last component of our new vector. Why does the dot product of the matrix's rows with the vector give us the rows of our new vector? This is something I need to further understand.\n\nFinally, comes multiplication by two matrices. This is a direct build-up from our previous conversation, which was a direct buildup from the conversation before that. Like before, there are multiple ways of viewing this same operation. This first way is the dot product of each of the rows of a first matrix with each of the columns of the second matrix. This explains why the dimensionality of the first matrix's rows and the second matrix's columns need to be the same. Another way of saying this is that the number of columns in the first matrix needs to be the same as the number of rows in the second matrix, but I don't really like this wording, it's not very descriptive (but it makes more sense as a sentence).\n\nThe second way stems from the second operation we talked about, which is matrix-vector multiplication. Here, we can describe matrix multiplication as multiplying the entirety of the first matrix by the individual column vectors of the second matrix. Multiplying the entire first matrix (which describes a transformation of space applied to each of the column vectors in the second matrix) by the first column of the second matrix (which describes where the basis vectors of Euclidean, `Identity` space go from a transformation) describes where the new first column of the new output matrix will take the first basis vector of identity space regarding our composition of our first and second transformations.\n\nOnce we multiply every column vector in our second matrix by the entire first matrix, we get a set of new vectors that can, of course, be composed into a new matrix. This new matrix describes the first two transformations using just one transformation. It is the first transformation that has been transformed by the second transformation. That is one way of viewing matrix multiplication. This also makes invertibility and finding inverse matrices a very intuitive idea.",
+    date: "2024",
+    readTime: "6 min read"
+  },
+  {
+    id: 4,
+    title: "Remember About Yourself:",
+    excerpt: "I don't want to be a machine learning engineer...",
+    content: "I don't want to be a machine learning engineer. Making an interface between a pre-built model and a company's infrastructure doesn't excite me. Web development infrastructure is interesting, yes, but that's just not what I want to focus on as the main pursuit of my life. I am interested in how the brain works. I want to design computers and algorithms that can take inspiration from the brain's own architecture. I want to build models that can iteratively design things, simulate their behavior, and improve their design at a scale that would take teams of engineers weeks. I want to work on designing computers that can handle machine learning models thousands of times more efficiently, maybe even someday figuring out how to mimic the way that neurons integrate computation and memory in the same cellular fabric. How does the brain implement object detection, memory, context, real-time simulation, and even creativity, hard-coded survival instincts, emotions, desire, loyalty, and things like that? I want to create circuits made out of actual cellular tissue so that an interface may integrate with the body without being rejected by immune cells and fibroblasts. There are so many things I would devote my every waking hour in the pursuit of advancing humanity's knowledge of. Don't settle for less. Oh, it's difficult? That's good. Don't be afraid! If someone think I should change my own behavior due to a fear of others' opinions, then that illustrates their own fear of others, and even themselves. Someone of strong self-confidence would like to surround themselves with those that are full of life and bravery. If someone woudldn't like that, then I have two questions for them. First: Would you rather surround yourself with those who fear you; those who live in fear of the world around them? Second: Does it feel more comfortable and suitable to be surrounded by people of that nature; do they seem easier to relate to?",
+    date: "2024",
+    readTime: "3 min read"
+  },
+  {
+    id: 5,
+    title: "Note to Sofia in a Flower-Covered Book.",
+    excerpt: "When i had covered these flowers with acrylic, they were vibrant and gorgeous...",
+    content:`"When i had covered these flowers with acrylic, they were vibrant and gorgeous. 
+    They reminded me of you, and i thought you would love them. Just a day after i covered them, while they were still drying, 
+    the bright yet subtle pink had turned to beige and brown. The blue had decided to seep out and go off somewhere, and the 
+    orange had blackened around the edges. The radiant purple had held up, but we'll see for how long. I tried to contain their 
+    undried, delicate, ephemeral beauty, but it was not a beauty that could be kept. Such is life. Such are living things. For a 
+    brief moment, they were delightful, please believe me on that. Despite this, I still love this handmade book that i've given you. 
+    The wilting flowers are flowers just the same, and I'll always remember the colors they once were. Even if the color fades from 
+    your face, it will be just as bright whenever that wonderful smile of yours lights up the world.`,
+    date: "2024",
+    readTime: "2 min read"
+  }
+];
+
+const WritingCard = ({ writing, onClick, index }) => {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }}
+      onClick={onClick}
+      className="group cursor-pointer"
+    >
+      <div className="relative bg-white/[0.02] border border-white/[0.05] rounded-xl p-6 hover:bg-white/[0.04] hover:border-cyan-500/20 transition-all duration-400 h-full flex flex-col">
+        {/* Title */}
+        <h3 className="text-lg font-light text-white/90 mb-3 group-hover:text-cyan-400 transition-colors duration-300 leading-snug">
+          {writing.title}
+        </h3>
+        
+        {/* Excerpt */}
+        <p className="text-sm text-white/40 font-light leading-relaxed line-clamp-2 flex-grow">
+          {writing.excerpt}
+        </p>
+        
+        {/* Footer */}
+        <div className="flex items-center justify-between mt-5 pt-4 border-t border-white/[0.04]">
+          <span className="text-xs text-white/25 font-mono">{writing.date}</span>
+          <span className="text-xs text-white/30 group-hover:text-cyan-400/70 transition-colors duration-300 flex items-center gap-1.5">
+            {writing.readTime}
+            <svg className="w-3 h-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </motion.article>
+  );
+};
+
+const WritingModal = ({ writing, onClose }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8"
+      onClick={onClose}
+    >
+      {/* Backdrop */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="absolute inset-0 bg-gray-950/95 backdrop-blur-sm" 
+      />
+      
+      {/* Modal Container */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 15 }}
+        transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-2xl max-h-[90vh] flex flex-col"
+      >
+        {/* Close button - floating outside the card */}
+        <button
+          onClick={onClose}
+          className="absolute -top-12 right-0 sm:right-0 w-8 h-8 flex items-center justify-center text-white/40 hover:text-white transition-colors duration-200"
+          aria-label="Close"
+        >
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        
+        {/* Card */}
+        <div className="bg-[#0a0f18] border border-white/[0.08] rounded-2xl overflow-hidden flex flex-col max-h-[90vh]">
+          {/* Header */}
+          <div className="px-6 sm:px-8 pt-8 pb-6 border-b border-white/[0.05]">
+            {/* Meta line */}
+            <div className="flex items-center gap-3 mb-5">
+              <span className="text-xs text-cyan-400/80 font-mono">{writing.date}</span>
+              <span className="w-1 h-1 rounded-full bg-white/20" />
+              <span className="text-xs text-white/30">{writing.readTime}</span>
+            </div>
+            
+            {/* Title */}
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-light text-white leading-tight tracking-tight">
+              {writing.title}
+            </h1>
+          </div>
+          
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar">
+            <div className="px-6 sm:px-8 py-6 sm:py-8">
+              {writing.content.split('\n\n').map((paragraph, idx) => (
+                <p key={idx} className="text-[15px] text-white/60 font-light leading-[1.8] mb-5 last:mb-0">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </div>
+          
+          {/* Footer accent */}
+          <div className="h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+const Writings = () => {
+  const [selectedWriting, setSelectedWriting] = useState(null);
+
+  return (
+    <div className="h-screen overflow-y-auto custom-scrollbar">
+      <div className="min-h-screen px-4 sm:px-8 py-24 sm:py-32">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-12 sm:mb-16"
+          >
+            <h1 className="text-4xl sm:text-5xl font-thin text-white mb-3 tracking-tight">
+              Writings
+            </h1>
+            <div className="w-12 h-px bg-cyan-500/50" />
+          </motion.div>
+          
+          {/* Writings List */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {WRITINGS.map((writing, index) => (
+              <WritingCard
+                key={writing.id}
+                writing={writing}
+                index={index}
+                onClick={() => setSelectedWriting(writing)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+      
+      {/* Modal */}
+      <AnimatePresence>
+        {selectedWriting && (
+          <WritingModal
+            writing={selectedWriting}
+            onClose={() => setSelectedWriting(null)}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+export default Writings;
