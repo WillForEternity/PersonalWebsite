@@ -38,7 +38,7 @@ const Hero = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative z-10 px-4 sm:px-8 pt-20">
+    <div className="min-h-screen flex items-center justify-center relative z-10 px-4 sm:px-8 py-20 sm:py-24">
       <div className="container mx-auto max-w-7xl">
         <motion.div
           variants={containerVariants}
@@ -102,7 +102,13 @@ const Hero = () => {
             variants={imageVariants}
             className="w-full lg:w-1/2 flex justify-center lg:justify-end items-center"
           >
-            <div className="relative group">
+            <a
+              href="https://www.linkedin.com/in/william-norden/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative group block"
+              aria-label="Open Will Norden on LinkedIn"
+            >
               {/* Decorative elements */}
               <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
@@ -115,7 +121,7 @@ const Hero = () => {
                 {/* Subtle overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-950/30 to-transparent" />
               </div>
-            </div>
+            </a>
           </motion.div>
         </motion.div>
       </div>
