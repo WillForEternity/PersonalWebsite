@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 
-const Background = ({ isEffectEnabled = true }) => {
+const Background = ({ isEffectEnabled = true, areWavyLinesEnabled = true }) => {
   const svgRef = useRef(null);
   // Use separate x/y state to avoid Safari's object comparison issues with useMemo
   const [mousePosX, setMousePosX] = useState(typeof window !== 'undefined' ? window.innerWidth / 2 : 0);
@@ -270,7 +270,8 @@ const Background = ({ isEffectEnabled = true }) => {
 
     // Performance: only iterate squares near the cursor (others are always opacity ~0 anyway).
     // This is especially important on Safari, which tends to repaint large SVG trees more slowly.
-    const maxEffectRadius = 175;
+    // Mouse effect radius (smaller = tighter / less spread out)
+    const maxEffectRadius = 120;
     const range = Math.ceil((maxEffectRadius + squareSize) / gridSpacing) + 3; // generous padding
     const centerCol = Math.floor(displayMousePosX / gridSpacing);
     const centerRow = Math.floor(displayMousePosY / gridSpacing);
@@ -313,17 +314,17 @@ const Background = ({ isEffectEnabled = true }) => {
         // 💡 DYNAMIC LIGHTING - Fast fade with dimmer outer rings
         let opacity = 0;
         let scale = 1;
-        if (distance < 35) {
+        if (distance < 24) {
           opacity = 0.6; // Brighter core (was 0.5)
           scale = 1.2; // Slight scale up for closest squares
-        } else if (distance < 70) {
+        } else if (distance < 48) {
           opacity = 0.25; // Brighter inner ring (was 0.2)
           scale = 1.1;
-        } else if (distance < 105) {
+        } else if (distance < 72) {
           opacity = 0.12; // Brighter medium ring (was 0.08)
-        } else if (distance < 140) {
+        } else if (distance < 96) {
           opacity = 0.06; // Brighter far ring (was 0.04)
-        } else if (distance < 175) {
+        } else if (distance < 120) {
           opacity = 0.025; // Brighter edge (was 0.015)
         }
         
@@ -347,15 +348,15 @@ const Background = ({ isEffectEnabled = true }) => {
               Math.pow(finalY + squareSize/2 - ripple.y, 2)
             );
             
-            // Ripple radius expands from 0 to 175px (matches max proximity zone) over duration
-            const rippleRadius = progress * 175;
+            // Ripple radius expands from 0 to maxEffectRadius (matches max proximity zone) over duration
+            const rippleRadius = progress * maxEffectRadius;
             const rippleThickness = 25; // How thick the ripple wave is
             
             // Check if square is within the ripple wave
             if (Math.abs(rippleDistance - rippleRadius) < rippleThickness) {
               // Calculate ripple intensity (much stronger at center, dramatic falloff)
               const wavePosition = Math.abs(rippleDistance - rippleRadius) / rippleThickness;
-              const centerFalloff = 1 - (rippleRadius / 175); // Stronger near click center
+              const centerFalloff = 1 - (rippleRadius / maxEffectRadius); // Stronger near click center
               const edgeFalloff = Math.pow(1 - wavePosition, 2); // Quadratic falloff from wave center
               const timeFalloff = 1 - Math.pow(progress, 0.6); // Much faster fade over time
               
@@ -402,7 +403,11 @@ const Background = ({ isEffectEnabled = true }) => {
 
   return (
     <div className="fixed inset-0 w-full h-full overflow-hidden bg-gray-950 cursor-none touch-none" style={{ backgroundColor: '#070e1a' }}>
-      <svg ref={svgRef} className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        ref={svgRef}
+        className={`absolute inset-0 w-full h-full transition-opacity duration-300 ${areWavyLinesEnabled ? 'opacity-10' : 'opacity-0'}`}
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <defs>
           <pattern id="waving-grid" width="128" height="128" patternUnits="userSpaceOnUse">
             {[0, 32, 64, 96, 128].map((x, index) => (
@@ -411,7 +416,7 @@ const Background = ({ isEffectEnabled = true }) => {
                 d={`M ${x} 0 L ${x} 160`} 
                 fill="none" 
                 stroke="rgba(255,255,255,0.7)" 
-                strokeWidth="1.5"
+                strokeWidth="0.7"
                 transform={`translate(${x} 0) rotate(90)`}
               />
             ))}
@@ -421,7 +426,7 @@ const Background = ({ isEffectEnabled = true }) => {
                 d={`M 0 ${y} L 160 ${y}`} 
                 fill="none" 
                 stroke="rgba(255,255,255,0.7)" 
-                strokeWidth="1.5"
+                strokeWidth="0.7"
                 transform={`translate(0 ${y})`}
               />
             ))}

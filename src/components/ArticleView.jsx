@@ -187,34 +187,8 @@ const ArticleView = ({ article, onBack }) => {
   
   return (
     <div className="min-h-screen relative z-10">
-      {/* Top navigation bar - positioned to avoid hamburger menu */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="fixed top-0 left-0 right-0 z-30 px-4 sm:px-8 py-4 sm:py-6"
-      >
-        {/* Offset to avoid hamburger menu (left side) */}
-        <div className="ml-16 sm:ml-20">
-          <button
-            onClick={onBack}
-            className="group flex items-center gap-2 text-white/60 hover:text-white transition-colors duration-200"
-          >
-            <svg 
-              className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span className="text-sm font-light">Back to Writings</span>
-          </button>
-        </div>
-      </motion.div>
-      
       {/* Article content */}
-      <div className="px-4 sm:px-8 pt-24 sm:pt-32 pb-20 sm:pb-32">
+      <div className="px-4 sm:px-8 pt-24 sm:pt-28 pb-20 sm:pb-32">
         <motion.article
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -329,23 +303,7 @@ const ArticleView = ({ article, onBack }) => {
             })}
           </div>
           
-          {/* Article footer */}
-          <footer className="mt-16 sm:mt-20 pt-8 border-t border-white/10">
-            <button
-              onClick={onBack}
-              className="group flex items-center gap-2 text-white/50 hover:text-cyan-400 transition-colors duration-200"
-            >
-              <svg 
-                className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span className="text-sm">Back to all writings</span>
-            </button>
-          </footer>
+          <div className="mt-16 sm:mt-20 pt-8 border-t border-white/10" />
         </motion.article>
       </div>
     </div>

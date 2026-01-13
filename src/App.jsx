@@ -11,8 +11,10 @@ function App() {
   const [currentView, setCurrentView] = useState('home');
   const [selectedArticle, setSelectedArticle] = useState(null); // For article view
   const [isMouseEffectEnabled, setIsMouseEffectEnabled] = useState(true);
-  const [isFishEffectEnabled, setIsFishEffectEnabled] = useState(true);
-  const [areFishHidden, setAreFishHidden] = useState(true);
+  const [areWavyLinesEnabled, setAreWavyLinesEnabled] = useState(true);
+  // Fish visibility cycles: dark -> visible -> disappeared -> dark
+  const [fishVisibility, setFishVisibility] = useState('dark');
+  const [fishEatenCount, setFishEatenCount] = useState(0);
   const [isContentVisible, setIsContentVisible] = useState(false);
 
   useEffect(() => {
@@ -84,10 +86,19 @@ function App() {
   return (
     <div className="relative min-h-screen text-neutral-300 antialiased selection:bg-cyan-300 selection:text-cyan-900">
       {/* Hide wavy grid background in writings mode */}
-      {!isInWritingsMode && <Background isEffectEnabled={isMouseEffectEnabled} />}
+      {!isInWritingsMode && (
+        <Background
+          isEffectEnabled={isMouseEffectEnabled}
+          areWavyLinesEnabled={areWavyLinesEnabled}
+        />
+      )}
       {/* Show a simple dark background when in writings mode (no grid) */}
       {isInWritingsMode && <div className="fixed inset-0 bg-[#070e1a]" style={{ zIndex: 0 }} />}
-      <FishBackground isEffectEnabled={isFishEffectEnabled} areFishHidden={areFishHidden} />
+      <FishBackground
+        isEffectEnabled={fishVisibility !== 'off'}
+        areFishHidden={fishVisibility === 'dark'}
+        onFishEaten={() => setFishEatenCount((c) => c + 1)}
+      />
       
       {/* Main content layer */}
       <div className="relative z-10">
@@ -108,11 +119,26 @@ function App() {
           [toggle mouse effect]
         </button>
         <button
-          onClick={() => setAreFishHidden(!areFishHidden)}
+          onClick={() => setAreWavyLinesEnabled(!areWavyLinesEnabled)}
           className="text-neutral-500 hover:text-white text-xs font-mono transition-colors duration-200"
         >
-          [{areFishHidden ? 'show fish' : 'hide fish'}]
+          [toggle wavy lines]
         </button>
+        <button
+          onClick={() =>
+            setFishVisibility((prev) =>
+              prev === 'dark' ? 'visible' : prev === 'visible' ? 'off' : 'dark'
+            )
+          }
+          className="text-neutral-500 hover:text-white text-xs font-mono transition-colors duration-200"
+        >
+          [toggle fish]
+        </button>
+      </div>
+
+      {/* Fish eaten counter */}
+      <div className="fixed bottom-4 left-4 z-50 text-neutral-500 text-xs font-mono">
+        [fish eaten: {fishEatenCount}]
       </div>
     </div>
   );

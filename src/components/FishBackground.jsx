@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useMemo, useState } from 'react';
 
-const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
+const FishBackground = ({ isEffectEnabled = true, areFishHidden = false, onFishEaten }) => {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
   const creaturesRef = useRef([]);
@@ -91,6 +91,8 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
       // Predator-specific properties
       this.isPursuing = false;
       this.pursuitBoost = 1.8; // Speed multiplier when chasing prey
+      this.flashUntil = 0; // Timestamp (ms) until which predator flashes after eating
+      this.flashDuration = 260; // ms (longer for a gentler pulse)
       
       this.trail = [];
       this.age = 0;
@@ -353,6 +355,12 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
 
             // Catch prey
             if (d < this.size * 1.5) {
+              // Flash once when eating a fish
+              this.flashUntil = Date.now() + this.flashDuration;
+              if (typeof onFishEaten === 'function') {
+                onFishEaten();
+              }
+
               // Respawn the caught fish - at mouse location if mouse is active, otherwise random
               const mousePos = mousePositionRef.current;
               if (mousePos.isActive) {
@@ -554,6 +562,51 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
       ctx.closePath();
       ctx.fillStyle = `rgba(${color}, ${alpha * 0.6})`;
       ctx.fill();
+
+      // Flash overlay (always on eat, even if fish are hidden)
+      const now = Date.now();
+      const remaining = this.flashUntil - now;
+      if (remaining > 0) {
+        // Smooth pulse: ease in/out with a sine bell curve (no jerky on/off)
+        const progress = 1 - Math.min(1, remaining / this.flashDuration); // 0 -> 1
+        const bell = Math.sin(progress * Math.PI); // 0 -> 1 -> 0
+        const pulse = bell * bell; // smoother peak
+        // Subtle brighten (not pure white): light-gray overlay with a small alpha bump
+        const flashAlpha = Math.min(1, alpha * (0.12 + pulse * 0.55));
+
+        ctx.save();
+        ctx.globalCompositeOperation = 'source-over';
+        const flashColor = '235, 235, 235';
+
+        // Front segment overlay
+        ctx.beginPath();
+        ctx.moveTo(0, -this.size);
+        ctx.lineTo(this.size * 2.2, 0);
+        ctx.lineTo(0, this.size);
+        ctx.closePath();
+        ctx.fillStyle = `rgba(${flashColor}, ${flashAlpha})`;
+        ctx.fill();
+
+        // Middle segment overlay
+        ctx.beginPath();
+        ctx.moveTo(-segmentLength, -segmentWidth);
+        ctx.lineTo(0, 0);
+        ctx.lineTo(-segmentLength, segmentWidth);
+        ctx.closePath();
+        ctx.fillStyle = `rgba(${flashColor}, ${flashAlpha * 0.85})`;
+        ctx.fill();
+
+        // Rear segment overlay
+        ctx.beginPath();
+        ctx.moveTo(-segmentLength * 1.8, -segmentWidth * 0.7);
+        ctx.lineTo(-segmentLength, 0);
+        ctx.lineTo(-segmentLength * 1.8, segmentWidth * 0.7);
+        ctx.closePath();
+        ctx.fillStyle = `rgba(${flashColor}, ${flashAlpha * 0.7})`;
+        ctx.fill();
+
+        ctx.restore();
+      }
     }
 
     drawFishBody(ctx, alpha, areFishHidden = false) {
@@ -715,6 +768,13 @@ const FishBackground = ({ isEffectEnabled = true, areFishHidden = false }) => {
 
     // Clear canvas completely transparent - don't interfere with background
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // If the effect is disabled (\"disappeared\" state), keep the canvas clear and
+    // pause all simulation updates so fish don't keep getting \"eaten\" off-screen.
+    if (!isEffectEnabled) {
+      animationRef.current = requestAnimationFrame(animate);
+      return;
+    }
 
     // Draw food
     for (let food of foods) {
